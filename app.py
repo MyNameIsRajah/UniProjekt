@@ -3,8 +3,6 @@ import base64
 
 st.title("Welcome to the _fruit Guessing Game_ :lemon:")
 
-st.write("This is my first web app.")
-
 #encodes picture to binary data and encodes it in base 64 text format
 def get_img_as_base64(file):
     with open(file, "rb") as f:
@@ -24,3 +22,8 @@ background-size: cover;
 </style>
 """
 st.markdown(page_bg_img, unsafe_allow_html=True)
+
+#adds a centered button to the play page
+col1, col2, col3 = st.columns(3)
+with col2:
+    st.page_link("pages/1_play.py", label="Start Guessing", icon="🍓")
