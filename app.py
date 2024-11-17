@@ -76,29 +76,37 @@ if "ziel_figur" not in st.session_state:
   st.session_state.hinweis_index = 2
   st.session_state.versuche = 0
 
-## An Nutzer:
-st.write("Wer bin ich?")
-st.write(hinweise[st.session_state.ziel_figur][st.session_state.hinweis_index])
-antwort = st.text_input("Antwort: ")
-
-
-if antwort.lower() == st.session_state.ziel_figur.lower(): # Antwort eingabe
-    st.write("Sehr gut, du liegst richtig! Wer bin ich jetzt? ...")   ###HIER Liegt ein Problem vor -> Wenn ich richtig liege, aktualisiert es nicht zum nächsten Gott, stattdessen muss ich wieder eine falsche Eingabe machen, bis es den nächsten zeigt; Interface: 'Wer bin ich' und 'wer bin ich jetzt' vedoppeln sich an der stelle, ästhetisches Probelm
-    st.session_state.ziel_figur = random.choice(goetter)  # Beispiel: Götterliste
-    st.session_state.hinweis_index = 0
-    st.session_state.versuche = 0
-   # st.experimental_rerun() -> Wurde das nicht vom Tobi genutzt?!
-##HIER Liegt ein Problem -> Die website lässt mich nicht raten sondern sagt mir sofort dass ich falsch liege, d.h.es wird erst gar nicht auf meine Antwort gewartet
-else:
-    st.session_state.versuche += 1
-    if st.session_state.versuche < 3:
-        st.write("Nein, du liegst falsch.")
-        st.session_state.hinweis_index -= 1
-        st.write(hinweise[st.session_state.ziel_figur][st.session_state.hinweis_index])
-
-    else:
-        st.write("Du hast verloren! Ich bin", st.session_state.ziel_figur)
+def check_answer():
+    if antwort.lower() == st.session_state.ziel_figur.lower(): # Antwort eingabe
+        st.write("Sehr gut, du liegst richtig! Wer bin ich jetzt? ...")   ###HIER Liegt ein Problem vor -> Wenn ich richtig liege, aktualisiert es nicht zum nächsten Gott, stattdessen muss ich wieder eine falsche Eingabe machen, bis es den nächsten zeigt; Interface: 'Wer bin ich' und 'wer bin ich jetzt' vedoppeln sich an der stelle, ästhetisches Probelm
         st.session_state.ziel_figur = random.choice(goetter)  # Beispiel: Götterliste
         st.session_state.hinweis_index = 0
         st.session_state.versuche = 0
+   # st.experimental_rerun() -> Wurde das nicht vom Tobi genutzt?!
+##HIER Liegt ein Problem -> Die website lässt mich nicht raten sondern sagt mir sofort dass ich falsch liege, d.h.es wird erst gar nicht auf meine Antwort gewartet
+    else:
+        st.session_state.versuche += 1
+        if st.session_state.versuche < 3:
+            st.write("Nein, du liegst falsch.")
+            st.session_state.hinweis_index -= 1
+            st.write(hinweise[st.session_state.ziel_figur][st.session_state.hinweis_index])
+
+        else:
+            st.write("Du hast verloren! Ich bin", st.session_state.ziel_figur)
+            st.session_state.ziel_figur = random.choice(goetter)  # Beispiel: Götterliste
+            st.session_state.hinweis_index = 0
+            st.session_state.versuche = 0
         #st.experimental_rerun() # auskommentieren
+
+## An Nutzer:
+st.write("Wer bin ich?")
+#st.write(hinweise[st.session_state.ziel_figur][st.session_state.hinweis_index])
+antwort = st.text_input("Antwort: ",key ="answer",on_change=check_answer)
+
+
+
+#button to get a hint (hinweis index needs to change)
+if st.button("I need a hint"):
+    st.write("Here is a hint: ", hinweise[st.session_state.ziel_figur][st.session_state.hinweis_index])
+
+
