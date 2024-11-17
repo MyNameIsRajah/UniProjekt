@@ -14,7 +14,7 @@ titanen = ["Gaia", "Uranos", "Kronos", "Rhea", "Nyx", "Erebos", "Prometheus", "A
 # Hinweise - die dem Spieler gegeben werden sollen
 # - WAS MICH STÖRT:
 # Ändere zu Englisch
-# Das system soll mit dem Schwierigsten (3. Position) beginnen und nicht random - schaue unten in main-Funktion - Ansatz: hinweis index auf 2 ändern?
+
 # BISHER nur Götter, Frage: Alles zu einer Liste/ Mehrere Listen gestalten?) - geht auch schnell, mit Gruppe besprechen
 hinweise = {
     # Götter
@@ -63,21 +63,27 @@ hinweise = {
     "Prometheus": ["Gab den Menschen das Feuer", "Wurde von Zeus bestraft", "Gilt als Wohltäter der Menschheit"],
     "Atlas": ["Trägt den Himmel auf seinen Schultern", "Titan des Widerstands", "Bruder von Prometheus"]
 }
+
+# Lösung erschaffen
 def ziel_figur():
     return random.choice(goetter)
 
+#Aufbau für ein neues spiel
 def initial_state(post_init=False):
     if not post_init:
         st.session_state.input = 0
+    #neues spiel neue Lösung
     st.session_state.goal = ziel_figur()
     st.session_state.attempt = 0
     st.session_state.over = False
     st.session_state.hint_index = 2
 
+#neues spiel wird gestartet, input +1
 def restart_game():
     initial_state(post_init=True)
     st.session_state.input += 1
 
+#hinweis aus der Liste
 def get_hint(hinweis_index):
      return hinweise[st.session_state.goal][hinweis_index]
 
@@ -87,13 +93,14 @@ def main():
         # Guess The God !!
         """
     )
-
+    #before the first game
     if 'goal' not in st.session_state:
         initial_state()
 
-
+    #button to start a new game
     st.button('New game', on_click=restart_game)
     hint_text = st.empty()
+    #User can try to guess here
     users_guess = st.text_input("Antwort: ",key ="guess")
 
     col1, _, _, _, col2 = st.columns(5)
@@ -101,11 +108,13 @@ def main():
         hint = st.button('Hint')
 
     with col2:
+        #before first guess
         if not users_guess:
             st.write(f"Attempt Left : 7")
+        # after 1st guess
         if users_guess:
             st.write(f"Attempt Left : {6-st.session_state.attempt}")
-
+    #if the hint button was clicked give a hint, first the last one of the list, then 2nd and so on
     if hint:  
         hint_response = get_hint(st.session_state.hint_index)
         if st.session_state.hint_index == 2:
@@ -115,8 +124,9 @@ def main():
         else :
             st.session_state.hint_index = 2
         hint_text.info(f'{hint_response}')
-
+    #if the user guessed something check for correctnes:
     if users_guess:
+
         if st.session_state.attempt < 6:
             st.session_state.attempt += 1
             if users_guess.lower() != st.session_state.goal.lower():
