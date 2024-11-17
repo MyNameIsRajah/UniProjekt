@@ -1,15 +1,13 @@
 import streamlit as st
 import random
 
-st.title("Play game")
-
 
 
 # Liste - Knowledgebase
-goetter = ["Zeus", "Hera", "Poseidon", "Hades", "Athena", "Apollo", "Artemis", "Ares", "Aphrodite", "Hephaistos", "Hermes", "Demeter", "Hestia"]
-helden = ["Herakles", "Achilles", "Odysseus", "Perseus", "Theseus", "Jason", "Atalante", "Orpheus"]
-wesen = ["Medusa", "Minotaurus", "Pegasus", "Sphinx", "Zentauren", "Hydra", "Chimäre", "Harpien", "Sirenen"]
-titanen = ["Gaia", "Uranos", "Kronos", "Rhea", "Nyx", "Erebos", "Prometheus", "Atlas"]
+Gods = ["Zeus", "Hera", "Poseidon", "Hades", "Athena", "Apollo", "Artemis", "Ares", "Aphrodite", "Hephaistos", "Hermes", "Demeter", "Hestia"]
+Hero = ["Herakles", "Achilles", "Odysseus", "Perseus", "Theseus", "Jason", "Atalante", "Orpheus"]
+Creature = ["Medusa", "Minotaurus", "Pegasus", "Sphinx", "Zentauren", "Hydra", "Chimäre", "Harpien", "Sirenen"]
+Titan = ["Gaia", "Uranos", "Kronos", "Rhea", "Nyx", "Erebos", "Prometheus", "Atlas"]
 
 # Hinweise - die dem Spieler gegeben werden sollen
 # - WAS MICH STÖRT:
@@ -65,27 +63,36 @@ hinweise = {
 }
 
 # Lösung erschaffen
-def ziel_figur():
-    return random.choice(goetter)
+def ziel_figur(theme):
+    if theme == "Gods":
+        return random.choice(Gods)
+    elif theme == "Titan": 
+        return random.choice(Titan)
+    elif theme == "Creature": 
+        return random.choice(Creature)
+    else:
+        return random.choice(Hero)
+
 
 #Aufbau für ein neues spiel
-def initial_state(post_init=False):
+def initial_state(theme, post_init=False):
     if not post_init:
         st.session_state.input = 0
     #neues spiel neue Lösung
-    st.session_state.goal = ziel_figur()
+    st.session_state.goal = ziel_figur(theme)
+    st.write(st.session_state.goal)
     st.session_state.attempt = 0
     st.session_state.over = False
     st.session_state.hint_index = 2
 
 #neues spiel wird gestartet, input +1
-def restart_game():
-    initial_state(post_init=True)
+def restart_game(theme):
+    initial_state(theme, post_init=True)
     st.session_state.input += 1
 
 #hinweis aus der Liste
-def get_hint(hinweis_index):
-     return hinweise[st.session_state.goal][hinweis_index]
+def get_hint(hint_index):
+     return hinweise[st.session_state.goal][hint_index]
 
 def main():
     st.write(
@@ -98,23 +105,29 @@ def main():
         initial_state()
 
     #button to start a new game
-    st.button('New game', on_click=restart_game)
+    option = st.selectbox( "What would you like to guess", ("Gods", "Hero", "Creature", "Titan"))
+    if option:
+        
+        st.write(st.session_state.theme)
+        
+
+    st.button('New game', on_click=restart_game(option))
     hint_text = st.empty()
     #User can try to guess here
     users_guess = st.text_input("Antwort: ",key ="guess")
 
     col1, _, _, _, col2 = st.columns(5)
     with col1:
-        hint = st.button('Hint')
+        hint = st.button('I need a Hint')
 
     with col2:
         #before first guess
         if not users_guess:
-            st.write(f"Attempt Left : 7")
+            st.write(f"Attempt Left : 4")
         # after 1st guess
         if users_guess:
-            st.write(f"Attempt Left : {6-st.session_state.attempt}")
-    #if the hint button was clicked give a hint, first the last one of the list, then 2nd and so on
+            st.write(f"Attempt Left : {3-st.session_state.attempt}")
+    #if the hint button was clicked give a hint, first the last one of the list, then 2nd and so on, aber momentan wird dann session.state.goal geändert cih weiß nicht wieso
     if hint:  
         hint_response = get_hint(st.session_state.hint_index)
         if st.session_state.hint_index == 2:
@@ -127,7 +140,7 @@ def main():
     #if the user guessed something check for correctnes:
     if users_guess:
 
-        if st.session_state.attempt < 6:
+        if st.session_state.attempt < 3:
             st.session_state.attempt += 1
             if users_guess.lower() != st.session_state.goal.lower():
                 st.write("Nope, try again.")
@@ -136,7 +149,7 @@ def main():
                 st.balloons()
                 st.session_state.over = True
         else:
-            st.write("Sorry, you Lost!, try again next time")
+            st.write("Sorry, you Lost!, the solution was:", st.session_state.goal)
             st.session_state.over = True
 if __name__ == '__main__':
     main()
