@@ -83,6 +83,7 @@ def initial_state(post_init=False):
     st.session_state.attempt = 0 # zählt die attempts pro spiel
     st.session_state.over = False
     st.session_state.hint_index = 2 #index = 2 um mit dem 3. hint zu starten
+    st.session_state.maxattempts = 4 #maxattempts 4
 
 #neues spiel wird gestartet, input +1
 def restart_game():
@@ -126,49 +127,86 @@ def main():
     st.button('New game', on_click=restart_game)
     hint_text = st.empty()
     #User can try to guess here
-    users_guess = st.text_input("Antwort: ",key ="guess")
+    #users_guess = st.text_input("Antwort: ",key ="guess")
 
-    col1, _, _, _, col2 = st.columns(5)
-    with col1:
-        hint = st.button('I need a Hint')
-
-    with col2:
-        #before first guess
-        if not users_guess:
-            st.write(f"Attempt Left : 4")
-        # after 1st guess
-        if users_guess:
-            st.write(f"Attempt Left : {3-st.session_state.attempt}")
-    #if the hint button was clicked give a hint, first the last one of the list, then 2nd and so on, aber momentan wird dann session.state.goal geändert cih weiß nicht wieso
-    if hint:  
-        hint_response = get_hint(st.session_state.hint_index)
-        if st.session_state.hint_index == 2:
-            st.session_state.hint_index = 0
-        elif st.session_state.hint_index == 0:
-            st.session_state.hint_index = 1
-        else :
-            st.session_state.hint_index = 2
-        hint_text.info(f'{hint_response}')
-    #if the user guessed something check for correctnes:
-    if users_guess:
-
-        if st.session_state.attempt < 3:
-            st.session_state.attempt += 1
-            if users_guess.lower() != st.session_state.goal.lower():
-                st.write("Nope, try again.")
+   
+    with st.container():  # Container for the chat input
+        user_input = st.chat_input("Type your guess or type 'hint'")
+        if user_input:
+            
+            # Game-chat logic
+             #hint first
+            if user_input.lower() == "hint":
+                hint_response = get_hint(st.session_state.hint_index)
+                st.session_state.hint_index = (st.session_state.hint_index + 1) % 3
+                with st.chat_message("user"):
+                    st.write(user_input)
+                with st.chat_message("assistant"):
+                    st.write(f"Hint: {hint_response}")
+                hint_text.info(f'Hint: {hint_response}')  #still to decide: optional: blue hint above or only assitant hint
             else:
-                st.write("Nice, you are correct!")
-                st.balloons()
-                st.session_state.over = True
-                # Store the number of attempts for the current game
-                if "attempts_per_game" not in st.session_state:
-                    st.session_state.attempts_per_game = []
-                st.session_state.attempts_per_game.append(st.session_state.attempt)
-        else:
-            st.write("Sorry, you Lost!, the solution was:", st.session_state.goal)
-            st.session_state.over = True
-            if "attempts_per_game" not in st.session_state:
-                st.session_state.attempts_per_game = []
-            st.session_state.attempts_per_game.append(st.session_state.attempt)
+                # Display user message
+                with st.chat_message("user"):
+                    st.write(user_input)
+                if user_input.lower() == st.session_state.goal.lower():
+                    with st.chat_message("assistant"):
+                        st.write("🎉 Correct! You've guessed it!")
+                    st.balloons()
+                    st.session_state.over = True
+                elif st.session_state.attempt < st.session_state.maxattempts:
+                    st.session_state.attempt += 1
+                    with st.chat_message("assistant"):
+                        st.write("Nope, try again!")
+                else:
+                    with st.chat_message("assistant"):
+                        st.write(f"Sorry, you lost! The correct answer was: {st.session_state.goal}")
+                    st.session_state.over = True
+
+    # Display attempts left
+    if 'attempt' in st.session_state:
+        st.write(f"Attempts Left: {st.session_state.maxattempts - st.session_state.attempt}")
+
+    # col1, _, _, _, col2 = st.columns(5)
+    # with col1:
+    #     hint = st.button('I need a Hint')
+
+    # with col2:
+    #     #before first guess
+    #     if not users_guess:
+    #         st.write(f"Attempt Left : 4")
+    #     # after 1st guess
+    #     if users_guess:
+    #         st.write(f"Attempt Left : {3-st.session_state.attempt}")
+    # #if the hint button was clicked give a hint, first the last one of the list, then 2nd and so on, aber momentan wird dann session.state.goal geändert cih weiß nicht wieso
+    # if hint:  
+    #     hint_response = get_hint(st.session_state.hint_index)
+    #     if st.session_state.hint_index == 2:
+    #         st.session_state.hint_index = 0
+    #     elif st.session_state.hint_index == 0:
+    #         st.session_state.hint_index = 1
+    #     else :
+    #         st.session_state.hint_index = 2
+    #     hint_text.info(f'{hint_response}')
+    # #if the user guessed something check for correctnes:
+    # if users_guess:
+
+    #     if st.session_state.attempt < 3:
+    #         st.session_state.attempt += 1
+    #         if users_guess.lower() != st.session_state.goal.lower():
+    #             st.write("Nope, try again.")
+    #         else:
+    #             st.write("Nice, you are correct!")
+    #             st.balloons()
+    #             st.session_state.over = True
+    #             # Store the number of attempts for the current game
+    #             if "attempts_per_game" not in st.session_state:
+    #                 st.session_state.attempts_per_game = []
+    #             st.session_state.attempts_per_game.append(st.session_state.attempt)
+    #     else:
+    #         st.write("Sorry, you Lost!, the solution was:", st.session_state.goal)
+    #         st.session_state.over = True
+    #         if "attempts_per_game" not in st.session_state:
+    #             st.session_state.attempts_per_game = []
+    #         st.session_state.attempts_per_game.append(st.session_state.attempt)
 if __name__ == '__main__':
     main()
