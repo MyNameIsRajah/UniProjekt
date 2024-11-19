@@ -86,6 +86,9 @@ def initial_state(post_init=False):
 
 #neues spiel wird gestartet, input +1
 def restart_game():
+    if "attempts_per_game" not in st.session_state:
+            st.session_state.attempts_per_game = []
+            st.session_state.attempts_per_game.append(st.session_state.attempt)
     theme = st.session_state.option  # Access the theme directly from session state
     
     st.session_state.goal = ziel_figur(theme)  # This line changes the goal
@@ -157,8 +160,15 @@ def main():
                 st.write("Nice, you are correct!")
                 st.balloons()
                 st.session_state.over = True
+                # Store the number of attempts for the current game
+                if "attempts_per_game" not in st.session_state:
+                    st.session_state.attempts_per_game = []
+                st.session_state.attempts_per_game.append(st.session_state.attempt)
         else:
             st.write("Sorry, you Lost!, the solution was:", st.session_state.goal)
             st.session_state.over = True
+            if "attempts_per_game" not in st.session_state:
+                st.session_state.attempts_per_game = []
+            st.session_state.attempts_per_game.append(st.session_state.attempt)
 if __name__ == '__main__':
     main()
