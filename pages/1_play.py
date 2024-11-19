@@ -75,11 +75,10 @@ def ziel_figur(theme):
 
 
 #Aufbau für ein neues spiel
-def initial_state(theme, post_init=False):
+def initial_state(post_init=False):
     if not post_init:
         st.session_state.input = 0
     #neues spiel neue Lösung
-    st.session_state.goal = ziel_figur(theme)
     st.write(st.session_state.goal)
     st.session_state.attempt = 0
     st.session_state.over = False
@@ -87,11 +86,16 @@ def initial_state(theme, post_init=False):
 
 #neues spiel wird gestartet, input +1
 def restart_game(theme):
-    initial_state(theme, post_init=True)
+    st.write("vor call function", st.session_state.goal)
+    st.session_state.goal = ziel_figur(theme)
+    st.write("nach call function", st.session_state.goal)
+    initial_state(post_init=True)
     st.session_state.input += 1
 
 #hinweis aus der Liste
+#warum wird hier goal geändert?!?!?
 def get_hint(hint_index):
+     st.write("in get hint", st.session_state.goal)
      return hinweise[st.session_state.goal][hint_index]
 
 def main():
@@ -100,15 +104,14 @@ def main():
         # Guess The God !!
         """
     )
+    option = st.selectbox( "What would you like to guess", ("Gods", "Hero", "Creature", "Titan"))
     #before the first game
     if 'goal' not in st.session_state:
+        st.session_state.goal = ziel_figur(option)
         initial_state()
+        
 
     #button to start a new game
-    option = st.selectbox( "What would you like to guess", ("Gods", "Hero", "Creature", "Titan"))
-    if option:
-        
-        st.write(st.session_state.theme)
         
 
     st.button('New game', on_click=restart_game(option))
@@ -131,7 +134,7 @@ def main():
     if hint:  
         hint_response = get_hint(st.session_state.hint_index)
         if st.session_state.hint_index == 2:
-          st.session_state.hint_index = 0
+            st.session_state.hint_index = 0
         elif st.session_state.hint_index == 0:
             st.session_state.hint_index = 1
         else :
