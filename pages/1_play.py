@@ -79,23 +79,23 @@ def initial_state(post_init=False):
     if not post_init:
         st.session_state.input = 0
     #neues spiel neue Lösung
-    st.write(st.session_state.goal)
-    st.session_state.attempt = 0
+    
+    st.session_state.attempt = 0 # zählt die attempts pro spiel
     st.session_state.over = False
-    st.session_state.hint_index = 2
+    st.session_state.hint_index = 2 #index = 2 um mit dem 3. hint zu starten
 
 #neues spiel wird gestartet, input +1
-def restart_game(theme):
-    st.write("vor call function", st.session_state.goal)
-    st.session_state.goal = ziel_figur(theme)
-    st.write("nach call function", st.session_state.goal)
+def restart_game():
+    theme = st.session_state.option  # Access the theme directly from session state
+    
+    st.session_state.goal = ziel_figur(theme)  # This line changes the goal
+    
     initial_state(post_init=True)
-    st.session_state.input += 1
-
+    st.session_state.input += 1  # counts how many games have been played
 #hinweis aus der Liste
 #warum wird hier goal geändert?!?!?
 def get_hint(hint_index):
-     st.write("in get hint", st.session_state.goal)
+    
      return hinweise[st.session_state.goal][hint_index]
 
 def main():
@@ -104,9 +104,15 @@ def main():
         # Guess The God !!
         """
     )
+    #enables user to choose a theme
     option = st.selectbox( "What would you like to guess", ("Gods", "Hero", "Creature", "Titan"))
+     # Save the selected option to session state
+    st.session_state.option = option  # Store the option in session state
+
+
+
     #before the first game
-    if 'goal' not in st.session_state:
+    if "goal" not in st.session_state:
         st.session_state.goal = ziel_figur(option)
         initial_state()
         
@@ -114,7 +120,7 @@ def main():
     #button to start a new game
         
 
-    st.button('New game', on_click=restart_game(option))
+    st.button('New game', on_click=restart_game)
     hint_text = st.empty()
     #User can try to guess here
     users_guess = st.text_input("Antwort: ",key ="guess")
