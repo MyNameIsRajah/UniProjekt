@@ -4,10 +4,10 @@ import random
 
 
 # Liste - Knowledgebase
-Gods = ["Zeus", "Hera", "Poseidon", "Hades", "Athena", "Apollo", "Artemis", "Ares", "Aphrodite", "Hephaistos", "Hermes", "Demeter", "Hestia"]
-Hero = ["Herakles", "Achilles", "Odysseus", "Perseus", "Theseus", "Jason", "Atalante", "Orpheus"]
-Creature = ["Medusa", "Minotaurus", "Pegasus", "Sphinx", "Zentauren", "Hydra", "Chimäre", "Harpien", "Sirenen"]
-Titan = ["Gaia", "Uranos", "Kronos", "Rhea", "Nyx", "Erebos", "Prometheus", "Atlas"]
+Gods = ["Zeus", "Hera", "Poseidon", "Hades", "Athena", "Apollo", "Artemis", "Ares", "Aphrodite", "Hephaestus", "Hermes", "Demeter", "Hestia"]
+Heroes = ["Heracles", "Achilles", "Odysseus", "Perseus", "Theseus", "Jason", "Atalanta", "Orpheus"]
+Creatures = ["Medusa", "Minotaur", "Pegasus", "Sphinx", "Centaurs", "Hydra", "Chimera", "Harpies", "Sirens"]
+Titans = ["Gaia", "Uranus", "Cronus", "Rhea", "Nyx", "Erebus", "Prometheus", "Atlas"]
 
 # Hinweise - die dem Spieler gegeben werden sollen
 # - WAS MICH STÖRT:
@@ -15,51 +15,51 @@ Titan = ["Gaia", "Uranos", "Kronos", "Rhea", "Nyx", "Erebos", "Prometheus", "Atl
 
 # BISHER nur Götter, Frage: Alles zu einer Liste/ Mehrere Listen gestalten?) - geht auch schnell, mit Gruppe besprechen
 hinweise = {
-    # Götter
-    "Zeus": ["Herrscher des Olymp", "Beherrsche den Blitz", "Vater von Herakles"],
-    "Hera": ["Göttin der Ehe", "Eifersüchtig auf Zeus' Liebschaften", "Beschützerin der Frauen"],
-    "Poseidon": ["Gott des Meeres", "Erzeuger von Erdbeben", "Trage einen Dreizack"],
-    "Hades": ["Herrscher der Unterwelt", "Habe einen Helm der Unsichtbarkeit", "Entführte Persephone"],
-    "Athena": ["Göttin der Weisheit", "Entsprang aus Zeus' Kopf", "Symbol: die Eule"],
-    "Apollo": ["Gott der Musik", "Führer der Musen", "Gott des Lichts und der Prophezeiung"],
-    "Artemis": ["Göttin der Jagd", "Zwilling von Apollo", "Schütze die Wälder"],
-    "Ares": ["Gott des Krieges", "Symbol: Speer und Helm", "Verhasst von fast allen Göttern"],
-    "Aphrodite": ["Göttin der Schönheit", "Geboren aus dem Meeresschaum", "Symbol: die Taube"],
-    "Hephaistos": ["Gott der Schmiedekunst", "Entstellt und hinke", "Schmiedete die Waffen der Götter"],
-    "Hermes": ["Götterbote", "Trage geflügelte Sandalen", "Beschützer von Reisenden"],
-    "Demeter": ["Göttin der Ernte", "Mutter von Persephone", "Symbol: der Weizenkranz"],
-    "Hestia": ["Göttin des Herdfeuers", "Symbol der Häuslichkeit", "Werde oft mit einem Herd dargestellt"],
+    # Gods
+    "Zeus": ["Ruler of Olympus", "Controls lightning", "Father of Heracles"],
+    "Hera": ["Goddess of marriage", "Jealous of Zeus' affairs", "Protector of women"],
+    "Poseidon": ["God of the sea", "Creator of earthquakes", "Carries a trident"],
+    "Hades": ["Ruler of the underworld", "Has a helmet of invisibility", "Kidnapped Persephone"],
+    "Athena": ["Goddess of wisdom", "Sprang from Zeus' head", "Symbol: the owl"],
+    "Apollo": ["God of music", "Leader of the Muses", "God of light and prophecy"],
+    "Artemis": ["Goddess of the hunt", "Twin of Apollo", "Protector of the forests"],
+    "Ares": ["God of war", "Symbol: spear and helmet", "Hated by almost all gods"],
+    "Aphrodite": ["Goddess of beauty", "Born from sea foam", "Symbol: the dove"],
+    "Hephaestus": ["God of blacksmiths", "Crippled and lame", "Forged the weapons of the gods"],
+    "Hermes": ["Messenger of the gods", "Wears winged sandals", "Protector of travelers"],
+    "Demeter": ["Goddess of the harvest", "Mother of Persephone", "Symbol: the wheat wreath"],
+    "Hestia": ["Goddess of the hearth", "Symbol of domesticity", "Often depicted with a hearth"],
 
-    # Helden
-    "Herakles": ["Stärkster Held", "Bekannt für 12 Aufgaben", "Tötete den Nemeischen Löwen"],
-    "Achilles": ["Größter Held des Trojanischen Krieges", "Seine Ferse war verwundbar", "Getötet von Paris"],
-    "Odysseus": ["König von Ithaka", "Listig und klug", "Baute das Trojanische Pferd"],
-    "Perseus": ["Held, der Medusa tötete", "Sohn von Zeus und Danaë", "Rettete Andromeda vor einem Seeungeheuer"],
-    "Theseus": ["Tötete den Minotaurus", "Führte Athen", "Benutzte einen Faden im Labyrinth"],
-    "Jason": ["Anführer der Argonauten", "Suchte das Goldene Vlies", "Hatte Medea als Gefährtin"],
-    "Atalante": ["Schnelle Läuferin", "Jägerin des Kalydonischen Ebers", "Bekannt für ihre Wettläufe"],
-    "Orpheus": ["Berühmter Musiker", "Reiste in die Unterwelt", "Versuchte, Eurydike zu retten"],
+    # Heroes
+    "Heracles": ["Strongest hero", "Known for 12 labors", "Killed the Nemean lion"],
+    "Achilles": ["Greatest hero of the Trojan War", "His heel was vulnerable", "Killed by Paris"],
+    "Odysseus": ["King of Ithaca", "Cunning and clever", "Built the Trojan Horse"],
+    "Perseus": ["Hero who killed Medusa", "Son of Zeus and Danaë", "Saved Andromeda from a sea monster"],
+    "Theseus": ["Killed the Minotaur", "Led Athens", "Used a thread in the labyrinth"],
+    "Jason": ["Leader of the Argonauts", "Sought the Golden Fleece", "Had Medea as a companion"],
+    "Atalanta": ["Fast runner", "Hunter of the Calydonian boar", "Known for her races"],
+    "Orpheus": ["Famous musician", "Traveled to the underworld", "Tried to save Eurydice"],
 
-    # Wesen
-    "Medusa": ["Gorgone mit Schlangenhaaren", "Versteinert Menschen mit ihrem Blick", "Getötet von Perseus"],
-    "Minotaurus": ["Halb Mensch, halb Stier", "Lebte im Labyrinth", "Besiegt von Theseus"],
-    "Pegasus": ["Geflügeltes Pferd", "Entstand aus Medusas Blut", "Hilfte Bellerophon im Kampf"],
-    "Sphinx": ["Löwenkörper und Menschenkopf", "Stellte Rätsel", "Besiegt von Ödipus"],
-    "Zentauren": ["Halb Mensch, halb Pferd", "Wilde Natur", "Bekannt: Cheiron, ein weiser Lehrer"],
-    "Hydra": ["Vielköpfiges Monster", "Jeder abgeschlagene Kopf wuchs nach", "Besiegt von Herakles"],
-    "Chimäre": ["Mischwesen aus Löwe, Ziege und Schlange", "Feuerspeiend", "Besiegt von Bellerophon"],
-    "Harpien": ["Geflügelte Frauen", "Symbol für Plagen und Diebstahl", "Belästigten König Phineus"],
-    "Sirenen": ["Verführerische Sängerinnen", "Lockten Seefahrer ins Verderben", "Von Odysseus überlistet"],
+    # Creatures
+    "Medusa": ["Gorgon with snake hair", "Turns people to stone with her gaze", "Killed by Perseus"],
+    "Minotaur": ["Half man, half bull", "Lived in the labyrinth", "Defeated by Theseus"],
+    "Pegasus": ["Winged horse", "Born from Medusa's blood", "Helped Bellerophon in battle"],
+    "Sphinx": ["Lion's body and human head", "Posed riddles", "Defeated by Oedipus"],
+    "Centaurs": ["Half man, half horse", "Wild nature", "Famous: Chiron, a wise teacher"],
+    "Hydra": ["Many-headed monster", "Each severed head grew back", "Defeated by Heracles"],
+    "Chimera": ["Hybrid of lion, goat, and snake", "Breathes fire", "Defeated by Bellerophon"],
+    "Harpies": ["Winged women", "Symbol of plagues and theft", "Tormented King Phineus"],
+    "Sirens": ["Seductive singers", "Lured sailors to their doom", "Outwitted by Odysseus"],
 
-    # Titanen
-    "Gaia": ["Urmutter der Erde", "Mutter der Titanen", "Gegen Uranos rebelliert"],
-    "Uranos": ["Personifikation des Himmels", "Gatte von Gaia", "Von Kronos gestürzt"],
-    "Kronos": ["Titan der Zeit", "Verschlang seine Kinder", "Von Zeus gestürzt"],
-    "Rhea": ["Titanin der Mutterschaft", "Rettete Zeus vor Kronos", "Mutter der Olympischen Götter"],
-    "Nyx": ["Göttin der Nacht", "Mutter vieler Götter", "Symbol für Geheimnis und Dunkelheit"],
-    "Erebos": ["Personifikation der Dunkelheit", "Gatte von Nyx", "Symbol der Schatten"],
-    "Prometheus": ["Gab den Menschen das Feuer", "Wurde von Zeus bestraft", "Gilt als Wohltäter der Menschheit"],
-    "Atlas": ["Trägt den Himmel auf seinen Schultern", "Titan des Widerstands", "Bruder von Prometheus"]
+    # Titans
+    "Gaia": ["Primordial mother of the earth", "Mother of the Titans", "Rebelled against Uranus"],
+    "Uranus": ["Personification of the sky", "Husband of Gaia", "Overthrown by Cronus"],
+    "Cronus": ["Titan of time", "Swallowed his children", "Overthrown by Zeus"],
+    "Rhea": ["Titaness of motherhood", "Saved Zeus from Cronus", "Mother of the Olympian gods"],
+    "Nyx": ["Goddess of the night", "Mother of many gods", "Symbol of mystery and darkness"],
+    "Erebus": ["Personification of darkness", "Husband of Nyx", "Symbol of shadows"],
+    "Prometheus": ["Gave fire to humans", "Punished by Zeus", "Considered a benefactor of humanity"],
+    "Atlas": ["Carries the sky on his shoulders", "Titan of endurance", "Brother of Prometheus"]
 }
 
 # Lösung erschaffen
@@ -67,11 +67,11 @@ def ziel_figur(theme):
     if theme == "Gods":
         return random.choice(Gods)
     elif theme == "Titan": 
-        return random.choice(Titan)
+        return random.choice(Titans)
     elif theme == "Creature": 
-        return random.choice(Creature)
+        return random.choice(Creatures)
     else:
-        return random.choice(Hero)
+        return random.choice(Heroes)
 
 
 #Aufbau für ein neues spiel
@@ -108,7 +108,7 @@ def main():
         """
     )
     #enables user to choose a theme
-    option = st.selectbox( "What would you like to guess", ("Gods", "Hero", "Creature", "Titan"))
+    option = st.selectbox( "What would you like to guess", ("Gods", "Heroes", "Creatures", "Titans"))
      # Save the selected option to session state
     st.session_state.option = option  # Store the option in session state
 
