@@ -10,9 +10,10 @@ st.markdown ("#### Welcome to our guessing game about the greek mythology. Can y
 st.write("You will have 4 attempts and 3 possible hints if you need them.")
 
 st.write("You can choose between guessing a greek God (for example _Zeus_), a hero (_Herakles_), a creature (_Medusa_) or a titan (_Gaia_)")
+#button to the play page
+if st.button("Start Guessing"):
+    st.switch_page("pages/1_play.py")
 
-
-st.page_link("pages/1_play.py", label="Start Guessing")
 
 #Create a more visible button, its not working
 # if st.button("Start Guessing"):
