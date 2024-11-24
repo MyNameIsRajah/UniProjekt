@@ -1,33 +1,37 @@
 import streamlit as st
 import random
 
-
+##WAS MICH STÖRT!: Die pages App und Play sind basically die gleichen. Können wir das beheben? Ist eine von den beiden nicht zu viel?
+## FRAGE AN DIE GRUPPE: Hint lieber ausschreiben oder doch button?
+## FRAGE AN DIE GRUPPE: Should we include a possibility that if the player doesnt want to guess this god to write out / press the button "give me another one" and he will get the answer and jump to the other?
+## FRAGE AN DIE GRUPPE: Sollten wir dem Benutzer sagen, dass er nach auswahl der Kategorie auf "new game" drücken soll da sonst automatisch mit gott weitergespielt?
+# FRAGE AN DIE GRUPPE : "Whar would you like to guess?" etwas größer machen die Schrift?
+#TO BE DONE : AESTHETIK - HINTERGRUND- THEMATISCH ANPASSEN
+#TO BE DONE: STATISTIK
+# TO BE DONE: CHATBOT
 
 # Liste - Knowledgebase
-Gods = ["Zeus", "Hera", "Poseidon", "Hades", "Athena", "Apollo", "Artemis", "Ares", "Aphrodite", "Hephaestus", "Hermes", "Demeter", "Hestia"]
+Gods = ["Zeus", "Hera", "Poseidon", "Hades", "Athena", "Apollo", "Artemis", "Ares", "Aphrodite", "Hephaestus", "Hermes",
+        "Demeter", "Hestia"]
 Heroes = ["Heracles", "Achilles", "Odysseus", "Perseus", "Theseus", "Jason", "Atalanta", "Orpheus"]
 Creatures = ["Medusa", "Minotaur", "Pegasus", "Sphinx", "Centaurs", "Hydra", "Chimera", "Harpies", "Sirens"]
 Titans = ["Gaia", "Uranus", "Cronus", "Rhea", "Nyx", "Erebus", "Prometheus", "Atlas"]
 
 # Hinweise - die dem Spieler gegeben werden sollen
-# - WAS MICH STÖRT:
-# Ändere zu Englisch
-
-# BISHER nur Götter, Frage: Alles zu einer Liste/ Mehrere Listen gestalten?) - geht auch schnell, mit Gruppe besprechen
 hinweise = {
     # Gods
     "Zeus": ["Ruler of Olympus", "Controls lightning", "Father of Heracles"],
     "Hera": ["Goddess of marriage", "Jealous of Zeus' affairs", "Protector of women"],
     "Poseidon": ["God of the sea", "Creator of earthquakes", "Carries a trident"],
     "Hades": ["Ruler of the underworld", "Has a helmet of invisibility", "Kidnapped Persephone"],
-    "Athena": ["Goddess of wisdom", "Sprang from Zeus' head", "Symbol: the owl"],
+    "Athena": ["Goddess of wisdom", "Sprang from Zeus' head", "Symbol = the owl"],
     "Apollo": ["God of music", "Leader of the Muses", "God of light and prophecy"],
     "Artemis": ["Goddess of the hunt", "Twin of Apollo", "Protector of the forests"],
-    "Ares": ["God of war", "Symbol: spear and helmet", "Hated by almost all gods"],
-    "Aphrodite": ["Goddess of beauty", "Born from sea foam", "Symbol: the dove"],
+    "Ares": ["God of war", "Symbol = spear and helmet", "Hated by almost all gods"],
+    "Aphrodite": ["Goddess of beauty", "Born from sea foam", "Symbol = the dove"],
     "Hephaestus": ["God of blacksmiths", "Crippled and lame", "Forged the weapons of the gods"],
     "Hermes": ["Messenger of the gods", "Wears winged sandals", "Protector of travelers"],
-    "Demeter": ["Goddess of the harvest", "Mother of Persephone", "Symbol: the wheat wreath"],
+    "Demeter": ["Goddess of the harvest", "Mother of Persephone", "Symbol = the wheat wreath"],
     "Hestia": ["Goddess of the hearth", "Symbol of domesticity", "Often depicted with a hearth"],
 
     # Heroes
@@ -62,80 +66,94 @@ hinweise = {
     "Atlas": ["Carries the sky on his shoulders", "Titan of endurance", "Brother of Prometheus"]
 }
 
-# Lösung erschaffen
+
+# Lösung erschaffen - Greift auf die verschiedenen Listen zu
 def ziel_figur(theme):
     if theme == "Gods":
         return random.choice(Gods)
-    elif theme == "Titan": 
+    elif theme == "Titans":
         return random.choice(Titans)
-    elif theme == "Creature": 
+    elif theme == "Creatures":
         return random.choice(Creatures)
     else:
-        return random.choice(Heroes)
+        return random.choice(Heroes) ##Gruppe fragen: Warum heroes? als else?, d.h. wenn ich kein Thema aussuche wird mir Heroes vorgeschlagen/ nicht lieber god? Oder sollte der Spieler nicht gezwungen sein ein Thema auszuwählen?
 
 
-#Aufbau für ein neues spiel
-def initial_state(post_init=False):
-    if not post_init:
-        st.session_state.input = 0
-    #neues spiel neue Lösung
-    
-    st.session_state.attempt = 0 # zählt die attempts pro spiel
-    st.session_state.over = False
-    st.session_state.hint_index = 2 #index = 2 um mit dem 3. hint zu starten
-    st.session_state.maxattempts = 4 #maxattempts 4
+# Aufbau für ein neues spiel
+def initial_state(post_init=False): #initial_state() dient dazu, den Anfangszustand deines Spiels zu definiere
+    if not post_init: ##Woher kommt das post_init?
+        st.session_state.update (
+            {
+                "games played": 0,
+                "attempt": 0,
+                "over": False,
+                "hint_index": 2,
+                "maxattempts": 4,
+                "input": 0, # Initialisierung von Input
+            }
+        )
+    # neues spiel neue Lösung - AUSKOMMENTIERT UM KOMPAKTE VERSION AUSZUPROBIEREN
+    #st.session_state.games_played = 0 #von Hajar
+    #st.session_state.attempt = 0  # zählt die attempts pro spiel
+    #st.session_state.over = False
+    #st.session_state.hint_index = 2  # index = 2 um mit dem 3. hint zu starten
+    #st.session_state.maxattempts = 4  # maxattempts 4
 
-#neues spiel wird gestartet, input +1
+
+# neues spiel wird gestartet, input +1 (indem benötigte Variablen in st.session aktualisiert)
 def restart_game():
     if "attempts_per_game" not in st.session_state:
-            st.session_state.attempts_per_game = []
-            st.session_state.attempts_per_game.append(st.session_state.attempt)
+        st.session_state.attempts_per_game = []
+        st.session_state.attempts_per_game.append(st.session_state.attempt)
     theme = st.session_state.option  # Access the theme directly from session state
-    
     st.session_state.goal = ziel_figur(theme)  # This line changes the goal
-    
     initial_state(post_init=True)
-    st.session_state.input += 1  # counts how many games have been played
-#hinweis aus der Liste
-#warum wird hier goal geändert?!?!?
+    st.session_state.input += 1  # counts how many games have been played - IN TOTAL?
+
+
+# hinweis aus der Liste
+# warum wird hier goal geändert?!?!?
 def get_hint(hint_index):
-    
-     return hinweise[st.session_state.goal][hint_index]
+    goal = st.session_state.goal
+    if goal in hinweise:
+        #Zugriff aus Hinweis in umgekehrter Reihenfolge (3-2-1)
+        return hinweise [goal][2 - hint_index]
+    else:
+        return "Für dieses Ziel sind keine Hinweise verfügbar." # wird doch eigentlich nie erreicht oder? Schafft ihr es den dude zusowas zu bringen?
+
+# ALSOOO zum Verständnis, as far as i understood:
+#Hier greifst du auf hinweise[st.session_state.goal] zu, um den Hinweis für das aktuelle Ziel abzurufen. Wenn der Schlüssel st.session_state.goal nicht im Dictionary hinweise existiert, wird ein neuer Eintrag erstellt, und dies könnte die unerwartete Änderung von session.state.goal verursachen.
+# Änderung: st.session_state.goal immer im Dictionary hinweise vorhanden ist, bevor du darauf zugreifs
 
 def main():
     st.write(
         """
-        # Guess The God !!
+        # Guess Figures of Greek Mythology
         """
     )
-    #enables user to choose a theme
-    option = st.selectbox( "What would you like to guess", ("Gods", "Heroes", "Creatures", "Titans"))
-     # Save the selected option to session state
+    # enables user to choose a theme
+    option = st.selectbox("What would you like to guess", ("Gods", "Heroes", "Creatures", "Titans"))
+    # Save the selected option to session state
     st.session_state.option = option  # Store the option in session state
 
-
-
-    #before the first game
+    # before the first game
     if "goal" not in st.session_state:
         st.session_state.goal = ziel_figur(option)
         initial_state()
-        
 
-    #button to start a new game
-        
+    # button to start a new game
 
     st.button('New game', on_click=restart_game)
     hint_text = st.empty()
-    #User can try to guess here
-    #users_guess = st.text_input("Antwort: ",key ="guess")
+    # User can try to guess here
+    # users_guess = st.text_input("Antwort: ",key ="guess")
 
-   
     with st.container():  # Container for the chat input
         user_input = st.chat_input("Type your guess or type 'hint'")
         if user_input:
-            
+
             # Game-chat logic
-             #hint first
+            # hint first
             if user_input.lower() == "hint":
                 hint_response = get_hint(st.session_state.hint_index)
                 st.session_state.hint_index = (st.session_state.hint_index + 1) % 3
@@ -143,7 +161,8 @@ def main():
                     st.write(user_input)
                 with st.chat_message("assistant"):
                     st.write(f"Hint: {hint_response}")
-                hint_text.info(f'Hint: {hint_response}')  #still to decide: optional: blue hint above or only assitant hint
+                hint_text.info(
+                    f'Hint: {hint_response}')  # still to decide: optional: blue hint above or only assitant hint
             else:
                 # Display user message
                 with st.chat_message("user"):
@@ -153,6 +172,9 @@ def main():
                         st.write("🎉 Correct! You've guessed it!")
                     st.balloons()
                     st.session_state.over = True
+                    # Automatischer Wechsel zur nächsten Frage
+                    theme = st.session_state.option
+                    st.session_state.goal = ziel_figur(theme)
                 elif st.session_state.attempt < st.session_state.maxattempts:
                     st.session_state.attempt += 1
                     with st.chat_message("assistant"):
@@ -178,7 +200,7 @@ def main():
     #     if users_guess:
     #         st.write(f"Attempt Left : {3-st.session_state.attempt}")
     # #if the hint button was clicked give a hint, first the last one of the list, then 2nd and so on, aber momentan wird dann session.state.goal geändert cih weiß nicht wieso
-    # if hint:  
+    # if hint:
     #     hint_response = get_hint(st.session_state.hint_index)
     #     if st.session_state.hint_index == 2:
     #         st.session_state.hint_index = 0
@@ -208,5 +230,7 @@ def main():
     #         if "attempts_per_game" not in st.session_state:
     #             st.session_state.attempts_per_game = []
     #         st.session_state.attempts_per_game.append(st.session_state.attempt)
+
+
 if __name__ == '__main__':
     main()
