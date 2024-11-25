@@ -17,7 +17,8 @@ model = "gpt-4o-mini"
 
 
 ##WAS MICH STÖRT!: Die pages App und Play sind basically die gleichen. Können wir das beheben? Ist eine von den beiden nicht zu viel?
-## FRAGE AN DIE GRUPPE: Hint lieber ausschreiben oder doch button?
+## GIVE ME THE SOLUTION RIGHT AWAY EINBAUEN?
+# FRAGE AN DIE GRUPPE: Hint lieber ausschreiben oder doch button?
 ## FRAGE AN DIE GRUPPE: Should we include a possibility that if the player doesnt want to guess this god to write out / press the button "give me another one" and he will get the answer and jump to the other?
 ## FRAGE AN DIE GRUPPE: Sollten wir dem Benutzer sagen, dass er nach auswahl der Kategorie auf "new game" drücken soll da sonst automatisch mit gott weitergespielt?
 # FRAGE AN DIE GRUPPE : "Whar would you like to guess?" etwas größer machen die Schrift?
@@ -25,11 +26,12 @@ model = "gpt-4o-mini"
 #TO BE DONE: STATISTIK
 # TO BE DONE: CHATBOT
 
+
 # Liste - Knowledgebase
 Gods = ["Zeus", "Hera", "Poseidon", "Hades", "Athena", "Apollo", "Artemis", "Ares", "Aphrodite", "Hephaestus", "Hermes",
         "Demeter", "Hestia"]
 Heroes = ["Heracles", "Achilles", "Odysseus", "Perseus", "Theseus", "Jason", "Atalanta", "Orpheus"]
-Creatures = ["Medusa", "Minotaur", "Pegasus", "Sphinx", "Centaurs", "Hydra", "Chimera", "Harpies", "Sirens"]
+Creatures = ["Medusa", "Minotaur", "Pegasus", "Sphinx", "Centaur", "Hydra", "Chimera", "Harpy", "Siren"]
 Titans = ["Gaia", "Uranus", "Cronus", "Rhea", "Nyx", "Erebus", "Prometheus", "Atlas"]
 
 # Hinweise - die dem Spieler gegeben werden sollen 
@@ -119,17 +121,30 @@ def initial_state(post_init=False): #initial_state() dient dazu, den Anfangszust
 
 
 # neues spiel wird gestartet, input +1 (indem benötigte Variablen in st.session aktualisiert)
+#def restart_game():
+#    if "attempts_per_game" not in st.session_state:
+#        st.session_state.attempts_per_game = []
+#        st.session_state.attempts_per_game.append(st.session_state.attempt)
+#    theme = st.session_state.option  # Access the theme directly from session state
+#    st.session_state.goal = ziel_figur(theme)  # This line changes the goal
+#    initial_state(post_init=True)
+#    st.session_state.input += 1  # counts how many games have been played - IN TOTAL?
+
+
 def restart_game():
     if "attempts_per_game" not in st.session_state:
         st.session_state.attempts_per_game = []
         st.session_state.attempts_per_game.append(st.session_state.attempt)
-    theme = st.session_state.option  # Access the theme directly from session state
-    st.session_state.goal = ziel_figur(theme)  # This line changes the goal
+
+    theme = st.session_state.option # Access the theme directly from session state
+    st.session_state.goal = ziel_figur(theme) # This line changes the goal
     initial_state(post_init=True)
-    st.session_state.input += 1  # counts how many games have been played - IN TOTAL?
+
+    # Anzahl der Spiele erhöhen:
+    st.session_state.input += 1
 
 
-# hinweis aus der Liste
+    # hinweis aus der Liste
 # warum wird hier goal geändert?!?!?
 # mp: this function can be removed, fctnality moved to def main to enable streaming AI hints
 # def get_hint(hint_index):  
