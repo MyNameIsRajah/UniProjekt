@@ -22,10 +22,10 @@ st.markdown(custom_css, unsafe_allow_html=True)
 # Use the custom class in a container
 st.markdown('''
 <div class = "my-container">
-    <h1>Greek Mythology 🏛️</h1>
+    <h1>Greek Mythology 🏛️⚡</h1>
     <h2>Welcome to our guessing game about greek mythology. Can you guess the mythological figures I am thinking about?</h2>
     <p>You will have 4 attempts and 3 possible hints if you need them.</p>
-    <p>You can choose between guessing a greek God (for example _Zeus_), a hero (_Herakles_), a creature (_Medusa_) or a titan (_Gaia_)</p>
+    <p>You can choose between guessing a greek God (for example Zeus), a hero (Herakles), a creature (Medusa) or a titan (Gaia)</p>
 </div>
 ''', unsafe_allow_html=True)
 
@@ -39,7 +39,7 @@ st.markdown('''
 
 
 #button to the play page
-if st.button("Start Guessing", icon="🌩️") :
+if st.button("Start Guessing 🪽") :
     st.switch_page("pages/1_play.py")
 
 #code to use background image
