@@ -2,7 +2,7 @@
 myenv/
 madiprivate.py
 .streamlit/secrets.toml
-
+$CWD/ .streamlit/secrets.toml
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
