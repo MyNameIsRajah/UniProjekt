@@ -1,6 +1,7 @@
 #madi änderungen
 myenv/
 madiprivate.py
+.streamlit/secrets.toml
 
 
 # Byte-compiled / optimized / DLL files

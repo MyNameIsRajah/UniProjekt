@@ -1,5 +1,16 @@
 import streamlit as st
 import random
+from openai import OpenAI
+
+# mp: initialize chat AI for hints
+# mp: our API key stored in .streamlit/secrets.toml and gitignore file to prevent it to be uploaded in github
+# mp: checks if the key OPENAI_API_KEY exists in screts.toml and if it has a value - prevents system/app error, provides dummy key(invalid key)
+if "OPENAI_API_KEY" in st.secrets and st.secrets["OPENAI_API_KEY"]:
+    client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"]) 
+else:
+    client = OpenAI(api_key="invalid key") 
+model = "gpt-4o-mini"
+
 
 ##WAS MICH STÖRT!: Die pages App und Play sind basically die gleichen. Können wir das beheben? Ist eine von den beiden nicht zu viel?
 ## FRAGE AN DIE GRUPPE: Hint lieber ausschreiben oder doch button?
@@ -17,7 +28,8 @@ Heroes = ["Heracles", "Achilles", "Odysseus", "Perseus", "Theseus", "Jason", "At
 Creatures = ["Medusa", "Minotaur", "Pegasus", "Sphinx", "Centaurs", "Hydra", "Chimera", "Harpies", "Sirens"]
 Titans = ["Gaia", "Uranus", "Cronus", "Rhea", "Nyx", "Erebus", "Prometheus", "Atlas"]
 
-# Hinweise - die dem Spieler gegeben werden sollen
+# Hinweise - die dem Spieler gegeben werden sollen 
+# mp: hints from knowledgebase that will be given in case the API is not responding
 hinweise = {
     # Gods
     "Zeus": ["Ruler of Olympus", "Controls lightning", "Father of Heracles"],
@@ -49,11 +61,11 @@ hinweise = {
     "Minotaur": ["Half man, half bull", "Lived in the labyrinth", "Defeated by Theseus"],
     "Pegasus": ["Winged horse", "Born from Medusa's blood", "Helped Bellerophon in battle"],
     "Sphinx": ["Lion's body and human head", "Posed riddles", "Defeated by Oedipus"],
-    "Centaurs": ["Half man, half horse", "Wild nature", "Famous: Chiron, a wise teacher"],
+    "Centaur": ["Half man, half horse", "Wild nature", "Famous: Chiron, a wise teacher"],
     "Hydra": ["Many-headed monster", "Each severed head grew back", "Defeated by Heracles"],
     "Chimera": ["Hybrid of lion, goat, and snake", "Breathes fire", "Defeated by Bellerophon"],
-    "Harpies": ["Winged women", "Symbol of plagues and theft", "Tormented King Phineus"],
-    "Sirens": ["Seductive singers", "Lured sailors to their doom", "Outwitted by Odysseus"],
+    "Harpy": ["Winged women", "Symbol of plagues and theft", "Tormented King Phineus"],
+    "Siren": ["Seductive singers", "Lured sailors to their doom", "Outwitted by Odysseus"],
 
     # Titans
     "Gaia": ["Primordial mother of the earth", "Mother of the Titans", "Rebelled against Uranus"],
@@ -82,22 +94,24 @@ def ziel_figur(theme):
 # Aufbau für ein neues spiel
 def initial_state(post_init=False): #initial_state() dient dazu, den Anfangszustand deines Spiels zu definiere
     if not post_init: ##Woher kommt das post_init?
-        st.session_state.update (
-            {
-                "games played": 0,
-                "attempt": 0,
-                "over": False,
-                "hint_index": 2,
-                "maxattempts": 4,
-                "input": 0, # Initialisierung von Input
-            }
-        )
-    # neues spiel neue Lösung - AUSKOMMENTIERT UM KOMPAKTE VERSION AUSZUPROBIEREN
-    #st.session_state.games_played = 0 #von Hajar
-    #st.session_state.attempt = 0  # zählt die attempts pro spiel
-    #st.session_state.over = False
-    #st.session_state.hint_index = 2  # index = 2 um mit dem 3. hint zu starten
-    #st.session_state.maxattempts = 4  # maxattempts 4
+        # st.session_state.update (
+        #     {
+        #         "games played": 0,
+        #         "attempt": 0,
+        #         "over": False,
+        #         "hint_index": 2,
+        #         "maxattempts": 4,
+        #         "input": 0, # Initialisierung von Input
+        #     }
+        # )
+    # neues spiel neue Lösung - AUSKOMMENTIERT UM KOMPAKTE VERSION AUSZUPROBIEREN 
+    # #mp 24/11: voherige version wieder hergestellt
+        st.session_state.input = 0
+    st.session_state.games_played = 0 #von Hajar
+    st.session_state.attempt = 0  # zählt die attempts pro spiel
+    st.session_state.over = False
+    st.session_state.hint_index = 2  # index = 2 um mit dem 3. hint zu starten
+    st.session_state.maxattempts = 4  # maxattempts 4
 
 
 # neues spiel wird gestartet, input +1 (indem benötigte Variablen in st.session aktualisiert)
@@ -113,13 +127,22 @@ def restart_game():
 
 # hinweis aus der Liste
 # warum wird hier goal geändert?!?!?
-def get_hint(hint_index):
-    goal = st.session_state.goal
-    if goal in hinweise:
-        #Zugriff aus Hinweis in umgekehrter Reihenfolge (3-2-1)
-        return hinweise [goal][2 - hint_index]
-    else:
-        return "Für dieses Ziel sind keine Hinweise verfügbar." # wird doch eigentlich nie erreicht oder? Schafft ihr es den dude zusowas zu bringen?
+# mp: this function can be removed, fctnality moved to def main to enable streaming AI hints
+# def get_hint(hint_index):  
+   
+#     chat_completion = client.chat.completions.create(  
+#         model=model,
+#         messages=[
+#                     {"role": "system", "content": "You are an expert on Greek mythology. Provide creative hints about Greek mythology characters."},
+#                     {"role": "user", "content": f"Give me a hint about {st.session_state.goal}."}
+#                 ]
+#     )   
+#     return chat_completion.choices[0].message.content
+    # if goal in hinweise:
+    #     #Zugriff aus Hinweis in umgekehrter Reihenfolge (3-2-1)
+    #     return hinweise [goal][2 - hint_index]
+    # else:
+    #     return "Für dieses Ziel sind keine Hinweise verfügbar." # wird doch eigentlich nie erreicht oder? Schafft ihr es den dude zusowas zu bringen?
 
 # ALSOOO zum Verständnis, as far as i understood:
 #Hier greifst du auf hinweise[st.session_state.goal] zu, um den Hinweis für das aktuelle Ziel abzurufen. Wenn der Schlüssel st.session_state.goal nicht im Dictionary hinweise existiert, wird ein neuer Eintrag erstellt, und dies könnte die unerwartete Änderung von session.state.goal verursachen.
@@ -148,41 +171,94 @@ def main():
     # User can try to guess here
     # users_guess = st.text_input("Antwort: ",key ="guess")
 
-    with st.container():  # Container for the chat input
+# mp: Container for the chat
+    with st.container():  
         user_input = st.chat_input("Type your guess or type 'hint'")
         if user_input:
-
-            # Game-chat logic
-            # hint first
+            # mp: Game-chat logic
             if user_input.lower() == "hint":
-                hint_response = get_hint(st.session_state.hint_index)
-                st.session_state.hint_index = (st.session_state.hint_index + 1) % 3
+                st.session_state.hint_index = (st.session_state.hint_index + 1) % 3 #mp iterating through knowledgebase hints, only required if openai not responding
+               # mp: display user msg
                 with st.chat_message("user"):
                     st.write(user_input)
+
+                # mp: AI hint response provided as a stream to simulate chatGPT-like appearance
                 with st.chat_message("assistant"):
-                    st.write(f"Hint: {hint_response}")
-                hint_text.info(
-                    f'Hint: {hint_response}')  # still to decide: optional: blue hint above or only assitant hint
+                    # mp: define user message and LLM system
+                    system_message = {"role": "system", "content": "You are an expert on Greek mythology. Provide creative hints about Greek mythology characters."}
+                    user_message = {"role": "user", "content": f"Give me a hint about {st.session_state.goal}."}                    
+                    # mp: Initialize response container
+                    hint_response = ""
+                    hint_container = st.empty()
+                    # mp get AI hint as a stream
+                    # mp "try" catch block to react to system error eg api is not responding
+                    # mp response = result from openai api call as a stream, stream = true
+                    try:
+                        response = client.chat.completions.create(
+                            model=model,
+                            messages=[system_message, user_message],
+                            stream=True
+                        )
+                        # mp display response in chunks from stream 
+                        for chunk in response:
+                            delta = chunk.choices[0].delta
+                            if hasattr(delta, "content") and delta.content:
+                                hint_response += delta.content  # mp Accumulate the content
+                                hint_container.write(f"Hint: {hint_response}")
+                    except Exception as e:
+                        # st.error(f"An error occurred: {e}") #mp: this was the error message but we dont need it anymore bc we use kb
+                        # mp: if error occures eg api key not valid, fall back to knowledge base hints & provides note that KB instead of LLM is active
+                        no_key_msg = "Note: Missing or invalid API key - hints from knowledge base instead of LLM"
+                        hint_text.info(no_key_msg)
+                        hint_response = hinweise [st.session_state.goal][2 - st.session_state.hint_index]
+                        st.write(hint_response)
+
+                ## mp: OPTIONAL version without streaming
+                # mp: here chat.completion is basically response in the version with streaming
+                # with st.chat_message("assistant"):
+                #     chat_completion = client.chat.completions.create(  
+                #         model=model,
+                #         messages=[
+                #         {"role": "system", "content": "You are an expert on Greek mythology. Provide creative hints about Greek mythology characters."},
+                #         {"role": "user", "content": f"Give me a hint about {st.session_state.goal}."}
+                #         ]
+                #     )
+                #     hint_response = chat_completion.choices[0].message.content 
+                #     st.write(f"Hint:  {hint_response}")
             else:
-                # Display user message
+                # mp: Display user chat (streamlit chat component)
                 with st.chat_message("user"):
                     st.write(user_input)
+                # mp: user did win
                 if user_input.lower() == st.session_state.goal.lower():
                     with st.chat_message("assistant"):
-                        st.write("🎉 Correct! You've guessed it!")
+                        st.write("\U0001F389 Correct! You've guessed it!") #mp unicode for emoji party popper
                     st.balloons()
                     st.session_state.over = True
                     # Automatischer Wechsel zur nächsten Frage
                     theme = st.session_state.option
                     st.session_state.goal = ziel_figur(theme)
-                elif st.session_state.attempt < st.session_state.maxattempts:
-                    st.session_state.attempt += 1
-                    with st.chat_message("assistant"):
-                        st.write("Nope, try again!")
+                # mp: user did not win, attempts 4 
                 else:
-                    with st.chat_message("assistant"):
-                        st.write(f"Sorry, you lost! The correct answer was: {st.session_state.goal}")
-                    st.session_state.over = True
+                    st.session_state.attempt += 1
+                    if st.session_state.attempt < st.session_state.maxattempts:
+                        with st.chat_message("assistant"):
+                            st.write("Nope, try again!")
+                    else:
+                        with st.chat_message("assistant"):
+                            st.write(f"Sorry, you lost! The correct answer was: {st.session_state.goal}")
+                        st.session_state.over = True   
+                        st.session_state.attempt = st.session_state.maxattempts 
+                        # mp: todo, what happens after game over eg collecting stats and restart game?
+                # mp : auskommentiert und oben neu verschachtelt um attempts zu fixen                    
+                # elif st.session_state.attempt <= st.session_state.maxattempts:
+                #     st.session_state.attempt += 1
+                #     with st.chat_message("assistant"):
+                #         st.write("Nope, try again!")
+                # else:
+                #     with st.chat_message("assistant"):
+                #         st.write(f"Sorry, you lost! The correct answer was: {st.session_state.goal}")
+                #     st.session_state.over = True
 
     # Display attempts left
     if 'attempt' in st.session_state:

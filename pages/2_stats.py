@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 #- The "Stats" page displays some stats about playing like the number of games played, the average number of guesses per game. 
 #- The "Stats" page displays a bar chart showing he number of guesses for each game
-st.write('# stats')
+st.write("# Your Statistics \U0001F4CA")  #unicode for bar chart
 
 
 #games per session
