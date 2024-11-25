@@ -2,6 +2,10 @@ import streamlit as st
 import random
 from openai import OpenAI
 
+# mp: tab name and icon
+st.set_page_config(page_title="Play", page_icon="🎲")
+
+
 # mp: initialize chat AI for hints
 # mp: our API key stored in .streamlit/secrets.toml and gitignore file to prevent it to be uploaded in github
 # mp: checks if the key OPENAI_API_KEY exists in screts.toml and if it has a value - prevents system/app error, provides dummy key(invalid key)

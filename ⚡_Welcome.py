@@ -2,6 +2,9 @@ import streamlit as st
 import base64
 # import random #SEE IF THATS GOOD
 
+#mp: tab name and icon 
+st.set_page_config(page_title="Greek Mythology", page_icon="⚡")
+
 #black rgb 0,0,0 
 #white 255,255,255, orange : rgba(248, 193, 29, 0.5)
 # Define your custom CSS
@@ -40,7 +43,7 @@ st.markdown('''
 
 #button to the play page
 if st.button("Start Guessing 🪽") :
-    st.switch_page("pages/1_play.py")
+    st.switch_page("pages/1_🎲_Play.py")
 
 #code to use background image
 def get_img_as_base64(file):
