@@ -8,38 +8,75 @@ import matplotlib.pyplot as plt
 # mp: tab name and icon
 st.set_page_config(page_title="Game Statistics", page_icon="📊")
 
+st.subheader ("Your Statistics")
+
 if "input" not in st.session_state:
     st.session_state.input = 0
 
 # Anzahl der Spiele
 if "input" in st.session_state:
-    anzahl_spiele = st.session_state.input
-    st.write(f"Number of games played: {anzahl_spiele}") # "f" für f-string -> ermöglicht, Variablen direkt in Strings einzubetten.
+    number_games = st.session_state.input
+    st.write(f"Number of games played: {number_games}") # "f" für f-string -> ermöglicht, Variablen direkt in Strings einzubetten.
 else:
     st.write("No games were played yet.")
 
+# Tabelleninhalte initialisieren
+tabellen_daten = {'Gesamtzahl der Spiele': [number_games]}
 
 # Durchschnittliche Rateversuche pro Spiel
-if "attempts_per_game" in st.session_state and st.session_state.attempts_per_game:  # Überprüfen, ob 'attempts_per_game' existiert
-    average_attempts = np.mean(st.session_state.attempts_per_game)  # Berechnung des Durchschnitts; np -> Durchschnitt der Rateversuche pro Spiel zu berechnen.
+if "attempts_per_game" in st.session_state:
+    average_attempts = np.mean(st.session_state.attempts_per_game)
     st.write(
-        f"Average number of guesses per game: {average_attempts:.2f}")  # Anzeige mit zwei Nachkommastellen (deshalb 2f)
-else:
-    st.write("No games were played yet.")
+        f"Average number of guesses per game: {average_attempts:.2f}"
+    )
 
-    # Grafische Darstellung (Balkendiagramm)
-    if "attempts_per_game" in st.session_state and st.session_state.attempts_per_game:
-        attempts_data = st.session_state.attempts_per_game  # Daten aus dem Session State
-        dataframe = pd.DataFrame(attempts_data, columns=["Attempts"])  # Erstellt Dataframe)
+    # Spalte zur Tabelle hinzufügen
+    tabellen_daten['Durchschnittliche Rateversuche'] = [average_attempts]
 
-        fig, ax = plt.subplots()
-        #  Erstellung von Diagrammen mit Matplotlib -  Ezeugt zwei objekte Figure (fig -> Container für gesamtes Diagramm, enthält alle Elemente)) und Axes (ax -> Koordinatensystem) Objekt
-        ax.bar(dataframe.index + 1, dataframe["Attempts"], color='purple')  # Balkendiagramm gezeichnet
-        ax.set_title("Attempts per Game")  # Titel Diagramm
-        ax.set_xlabel("Game Number")  # Beschriftung x-Achse
-        ax.set_ylabel("Attempts")  # Beschriftung y-Achse
+# Tabelle
+df_uebersicht = pd.DataFrame(tabellen_daten)
 
-        st.pyplot(fig)  # => Diagramm in Streamlit anzeigen
+st.dataframe(df_uebersicht)
+
+st.subheader("Bar Chart")
+st.bar_chart(df_uebersicht)
+
+# Durchschnittliche Rateversuche pro Spiel
+#if "attempts_per_game" in st.session_state:  # Überprüfen, ob 'attempts_per_game' existiert
+#    average_attempts = np.mean(st.session_state.attempts_per_game)  # Berechnung des Durchschnitts; np -> Durchschnitt der Rateversuche pro Spiel zu berechnen.
+#    st.write(
+#        f"Average number of guesses per game: {average_attempts:.2f}")  # Anzeige mit zwei Nachkommastellen (deshalb 2f)
+#else:
+#    st.write("No games were played yet.")
+
+# Tabelle
+
+#    df_uebersicht = pd.DataFrame({
+#        'Gesamtzahl der Spiele': [number_games],
+#        'Durchschnittliche Rateversuche': [average_attempts],
+#    })
+
+#    st.dataframe(df_uebersicht)
+
+    #Tabelle
+   # df_table = pd.DataFrame({
+    #    'Number of games played' : [number_games],
+     #   'Average number of guesses per game': [average_attempts],
+  #  })
+
+# Grafische Darstellung (Balkendiagramm)
+#if "attempts_per_game" in st.session_state:
+#        attempts_data = st.session_state.attempts_per_game  # Daten aus dem Session State
+#        df_barchart = pd.DataFrame(attempts_data, columns=["Attempts"])  # Erstellt Dataframe)
+#
+#        fig, ax = plt.subplots()
+#        #  Erstellung von Diagrammen mit Matplotlib -  Ezeugt zwei objekte Figure (fig -> Container für gesamtes Diagramm, enthält alle Elemente)) und Axes (ax -> Koordinatensystem) Objekt
+#        ax.bar(dataframe.index + 1, df_barchart["Attempts"], color='purple')  # Balkendiagramm gezeichnet
+#        ax.set_title("Attempts per Game")  # Titel Diagramm
+#        ax.set_xlabel("Game Number")  # Beschriftung x-Achse
+#        ax.set_ylabel("Attempts")  # Beschriftung y-Achse
+#
+#        st.pyplot(fig)  # => Diagramm in Streamlit anzeigen
 
 #- The "Stats" page displays some stats about playing like the number of games played, the average number of guesses per game.
 #- The "Stats" page displays a bar chart showing he number of guesses for each game
