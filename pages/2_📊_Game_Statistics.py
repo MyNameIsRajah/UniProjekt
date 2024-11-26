@@ -41,6 +41,39 @@ st.dataframe(df_uebersicht)
 st.subheader("Bar Chart")
 st.bar_chart(df_uebersicht)
 
+
+#test jule
+attempts_data = st.session_state.attempts_per_game #attempts per game
+test = pd.DataFrame(attempts_data, columns=["Attempts"]) 
+
+test2 = pd.DataFrame(
+    {
+        "games":[i for i in range(1,number_games+1)]
+    }
+)
+data = pd.concat([test2, test], axis=1)
+#übernommen von oben
+if "attempts_per_game" in st.session_state:
+    average_attempts = np.mean(st.session_state.attempts_per_game)
+    st.write(
+        f"Average number of guesses per game: {average_attempts:.2f}"
+    )
+
+    # Spalte zur Tabelle hinzufügen
+    #tabellen_data['Rateversuche'] = [st.session_state.attempts_per_game]
+
+
+#show dataframe
+st.dataframe(data)
+st.subheader("Bar Chart jule")
+st.bar_chart(
+    data,
+    x= "games",
+    y= "Attempts",
+    x_label="games played",
+    y_label="attempts per game"
+)
+
 # Durchschnittliche Rateversuche pro Spiel
 #if "attempts_per_game" in st.session_state:  # Überprüfen, ob 'attempts_per_game' existiert
 #    average_attempts = np.mean(st.session_state.attempts_per_game)  # Berechnung des Durchschnitts; np -> Durchschnitt der Rateversuche pro Spiel zu berechnen.

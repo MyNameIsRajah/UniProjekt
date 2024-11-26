@@ -94,7 +94,8 @@ def ziel_figur(theme):
     elif theme == "Creatures":
         return random.choice(Creatures)
     else:
-        return random.choice(Heroes) ##Gruppe fragen: Warum heroes? als else?, d.h. wenn ich kein Thema aussuche wird mir Heroes vorgeschlagen/ nicht lieber god? Oder sollte der Spieler nicht gezwungen sein ein Thema auszuwählen?
+        return random.choice(Heroes) ##Gruppe fragen: Warum heroes? als else?, d.h. wenn ich kein Thema aussuche wird mir Heroes vorgeschlagen/ nicht lieber god? Oder sollte der Spieler nicht gezwungen sein ein Thema auszuwählen? 
+    #else weil das die letzte option ist zuerst ist Gott ausgewählt. 
 
 
 # Aufbau für ein neues spiel
@@ -131,9 +132,11 @@ def initial_state(post_init=False): #initial_state() dient dazu, den Anfangszust
 #    st.session_state.input += 1  # counts how many games have been played - IN TOTAL?
 
 
-def restart_game():
+def restart_game(): 
     if "attempts_per_game" not in st.session_state:
         st.session_state.attempts_per_game = []
+        st.session_state.attempts_per_game.append(st.session_state.attempt)
+    else :
         st.session_state.attempts_per_game.append(st.session_state.attempt)
 
     theme = st.session_state.option # Access the theme directly from session state
@@ -170,14 +173,15 @@ def restart_game():
 def main():
     st.write(
         """
-        # Guess Figures of Greek Mythology
+        # :blue[Guess Figures of Greek Mythology]
         """
     )
-    # enables user to choose a theme
-    option = st.selectbox("What would you like to guess", ("Gods", "Heroes", "Creatures", "Titans"))
+    # enables user to choose a theme, on_change a new game is automatically initialized
+    #PROBLEM: es wird immernoch die letzte figur benutzt 
+    option = st.selectbox(" :grey[Choose a Figure you would like to guess zo get started]", ("Gods", "Heroes", "Creatures", "Titans"), on_change =restart_game)
     # Save the selected option to session state
     st.session_state.option = option  # Store the option in session state
-
+  
     # before the first game
     if "goal" not in st.session_state:
         st.session_state.goal = ziel_figur(option)
@@ -187,8 +191,6 @@ def main():
 
     st.button('New game', on_click=restart_game)
     hint_text = st.empty()
-    # User can try to guess here
-    # users_guess = st.text_input("Antwort: ",key ="guess")
 
 # mp: Container for the chat
     with st.container():  
@@ -262,10 +264,10 @@ def main():
                     st.session_state.attempt += 1
                     if st.session_state.attempt < st.session_state.maxattempts:
                         with st.chat_message("assistant"):
-                            st.write("Nope, try again!")
+                            st.write(" :blue[Nope, try again!]")
                     else:
                         with st.chat_message("assistant"):
-                            st.write(f"Sorry, you lost! The correct answer was: {st.session_state.goal}")
+                            st.write(f" :blue[Sorry, you lost! The correct answer was:] {st.session_state.goal}")
                         st.session_state.over = True   
                         st.session_state.attempt = st.session_state.maxattempts 
                         # mp: todo, what happens after game over eg collecting stats and restart game?
@@ -281,7 +283,27 @@ def main():
 
     # Display attempts left
     if 'attempt' in st.session_state:
-        st.write(f"Attempts Left: {st.session_state.maxattempts - st.session_state.attempt}")
+        st.write(f" :blue[Attempts Left: {st.session_state.maxattempts - st.session_state.attempt}]")
+   
+ #set background image
+def get_img_as_base64(file):
+    with open(file, "rb") as f:
+        data = f.read()
+    return base64.b64encode(data).decode()
+img = get_img_as_base64("./image.png")
+page_bg_img = f"""
+<style>
+[data-testid="stAppViewContainer"]{{
+background-image: url("data:image/png;base64,{img}");
+background-size: cover;
+}}
+</style>
+"""
+st.markdown(page_bg_img, unsafe_allow_html=True)
+
+if __name__ == '__main__':
+    main()
+
 
     # col1, _, _, _, col2 = st.columns(5)
     # with col1:
@@ -327,21 +349,3 @@ def main():
     #         st.session_state.attempts_per_game.append(st.session_state.attempt)
 
 
-#set background image
-def get_img_as_base64(file):
-    with open(file, "rb") as f:
-        data = f.read()
-    return base64.b64encode(data).decode()
-img = get_img_as_base64("./image.png")
-page_bg_img = f"""
-<style>
-[data-testid="stAppViewContainer"]{{
-background-image: url("data:image/png;base64,{img}");
-background-size: cover;
-}}
-</style>
-"""
-st.markdown(page_bg_img, unsafe_allow_html=True)
-
-if __name__ == '__main__':
-    main()
