@@ -1,7 +1,7 @@
 import streamlit as st
 import random
 from openai import OpenAI
-
+import base64
 # mp: tab name and icon
 st.set_page_config(page_title="Play", page_icon="🎲")
 
@@ -326,6 +326,22 @@ def main():
     #             st.session_state.attempts_per_game = []
     #         st.session_state.attempts_per_game.append(st.session_state.attempt)
 
+
+#set background image
+def get_img_as_base64(file):
+    with open(file, "rb") as f:
+        data = f.read()
+    return base64.b64encode(data).decode()
+img = get_img_as_base64("./image.png")
+page_bg_img = f"""
+<style>
+[data-testid="stAppViewContainer"]{{
+background-image: url("data:image/png;base64,{img}");
+background-size: cover;
+}}
+</style>
+"""
+st.markdown(page_bg_img, unsafe_allow_html=True)
 
 if __name__ == '__main__':
     main()

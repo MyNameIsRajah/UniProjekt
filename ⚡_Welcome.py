@@ -11,10 +11,11 @@ st.set_page_config(page_title="Greek Mythology", page_icon="⚡")
 custom_css = """
 <style>
 .my-container {
- background: rgba(255, 255, 255, 0.5);
- padding: 10px;
+ background: rgba(255, 255, 255, 0.0);
+ padding: 100px;
  border-radius: 5px;
  color: rgba(7, 69, 110, 1);
+ text-align: center;
 }
 </style>
 """
@@ -50,12 +51,12 @@ def get_img_as_base64(file):
     with open(file, "rb") as f:
         data = f.read()
     return base64.b64encode(data).decode()
-img = get_img_as_base64("./background.png")
+img = get_img_as_base64("./image.png")
 page_bg_img = f"""
 <style>
 [data-testid="stAppViewContainer"]{{
 background-image: url("data:image/png;base64,{img}");
-background-size: contain;
+background-size: cover;
 }}
 </style>
 """
