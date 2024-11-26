@@ -8,7 +8,10 @@ st.set_page_config(page_title="Greek Mythology", page_icon="⚡")
 #black rgb 0,0,0 
 #white 255,255,255, orange : rgba(248, 193, 29, 0.5)
 # Define your custom CSS
+
 custom_css = """
+<head>
+<link href="https://fonts.googleapis.com/css2?family=Caesar+Dressing&display=swap" rel="stylesheet">
 <style>
 .my-container {
  background: rgba(255, 255, 255, 0.0);
@@ -16,8 +19,12 @@ custom_css = """
  border-radius: 5px;
  color: rgba(7, 69, 110, 1);
  text-align: center;
+ font-family: "sophia", sans serif;
+h1 {font-family: "Caesar Dressing", system-ui;}
+h2 {font-family: "Caesar Dressing", system-ui;}
 }
 </style>
+</head>
 """
 
 # Apply the custom CSS
@@ -42,9 +49,11 @@ st.markdown('''
 #st.write("You can choose between guessing a greek God (for example _Zeus_), a hero (_Herakles_), a creature (_Medusa_) or a titan (_Gaia_)")
 
 
-#button to the play page
-if st.button("Start Guessing 🪽") :
-    st.switch_page("pages/1_🎲_Play.py")
+#centered button to start guessing and go to play plage
+_, col1, _ = st.columns(3)
+with col1:
+    if st.button("Start Guessing 🪽") :
+        st.switch_page("pages/1_🎲_Play.py")
 
 #code to use background image
 def get_img_as_base64(file):

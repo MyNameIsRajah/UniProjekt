@@ -282,9 +282,17 @@ def main():
                 #     st.session_state.over = True
 
     # Display attempts left
-    if 'attempt' in st.session_state:
-        st.write(f" :blue[Attempts Left: {st.session_state.maxattempts - st.session_state.attempt}]")
-   
+    col1, _, col2 = st.columns(3)
+    with col1:
+        if 'attempt' in st.session_state:
+            st.write(f" :blue[Attempts Left: {st.session_state.maxattempts - st.session_state.attempt}]")
+
+    with col2:
+        if st.button("Check your game statistics 🪽") :
+            st.switch_page("pages/2_📊_Game_Statistics.py")
+
+
+    
  #set background image
 def get_img_as_base64(file):
     with open(file, "rb") as f:
@@ -303,7 +311,6 @@ st.markdown(page_bg_img, unsafe_allow_html=True)
 
 if __name__ == '__main__':
     main()
-
 
     # col1, _, _, _, col2 = st.columns(5)
     # with col1:

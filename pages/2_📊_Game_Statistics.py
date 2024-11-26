@@ -13,6 +13,9 @@ st.subheader ("Your Statistics")
 if "input" not in st.session_state:
     st.session_state.input = 0
 
+if "attempts_per_game" not in st.session_state:
+    st.session_state.attempts_per_game = 0
+
 # Anzahl der Spiele
 if "input" in st.session_state:
     number_games = st.session_state.input
@@ -42,7 +45,7 @@ st.subheader("Bar Chart")
 st.bar_chart(df_uebersicht)
 
 
-#test jule
+#test jule #funktioniert nur nicht wenn keine games gespielt wurden
 attempts_data = st.session_state.attempts_per_game #attempts per game
 test = pd.DataFrame(attempts_data, columns=["Attempts"]) 
 
