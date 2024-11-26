@@ -52,7 +52,7 @@ st.markdown('''
 #centered button to start guessing and go to play plage
 _, col1, _ = st.columns(3)
 with col1:
-    if st.button("Start Guessing 🪽") :
+    if st.button("Start Guessing") :
         st.switch_page("pages/1_🎲_Play.py")
 
 #code to use background image
