@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 ##STATISTIK ERST AKTUALISIERT WENN AUF "NEW GAME" GEKLICKT WIRD
 
 # mp: tab name and icon
@@ -13,8 +14,13 @@ st.subheader ("Your Statistics")
 if "input" not in st.session_state:
     st.session_state.input = 0
 
-if "attempts_per_game" not in st.session_state:
-    st.session_state.attempts_per_game = 0
+# Farbpalette für die Kategorien
+color_palette = {
+    "Gods": "blue",
+    "Creatures": "orange",
+    "Titans": "green",
+    "Heroes": "purple",
+}
 
 # Anzahl der Spiele
 if "input" in st.session_state:
@@ -24,7 +30,7 @@ else:
     st.write("No games were played yet.")
 
 # Tabelleninhalte initialisieren
-tabellen_daten = {'Gesamtzahl der Spiele': [number_games]}
+#tabellen_daten = {'Gesamtzahl der Spiele': [number_games]}
 
 # Durchschnittliche Rateversuche pro Spiel
 if "attempts_per_game" in st.session_state:
@@ -33,19 +39,90 @@ if "attempts_per_game" in st.session_state:
         f"Average number of guesses per game: {average_attempts:.2f}"
     )
 
+    # DataFrame aus game_data erstellen
+    games = list(st.session_state.game_data.keys())
+    attempts = [st.session_state.game_data[game]["Runden"] for game in games]
+    categories = [st.session_state.game_data[game]["Kategorie"] for game in games]
+
+    df_stats = pd.DataFrame({
+        "Spielnummer": games,
+        "Versuche": attempts,
+        "Kategorie": categories
+    })
+
+    # Balkendiagramm erstellen
+    fig, ax = plt.subplots()
+    for i, game in enumerate(games):
+        ax.bar(game, attempts[i], color=color_palette[categories[i]], label=categories[i])
+
+    # Diagramm beschriften
+    ax.set_title("Runden pro Spiel und Kategorie")
+    ax.set_xlabel("Spielnummer")
+    ax.set_ylabel("Runden")
+    ax.legend()
+    st.pyplot(fig)
+
+    # Tabelle anzeigen
+    st.dataframe(df_stats)
+
+    # Zusätzliches Balkendiagramm mit Streamlit (optional)
+    st.subheader("Bar Chart (Streamlit)")
+    st.bar_chart(df_stats, x="Spielnummer", y="Versuche", color="Kategorie")
     # Spalte zur Tabelle hinzufügen
-    tabellen_daten['Durchschnittliche Rateversuche'] = [average_attempts]
+    #tabellen_daten['Durchschnittliche Rateversuche'] = [average_attempts]
 
+###
 # Tabelle
-df_uebersicht = pd.DataFrame(tabellen_daten)
+#df_uebersicht = pd.DataFrame(tabellen_daten)
 
-st.dataframe(df_uebersicht)
+#st.dataframe(df_uebersicht)
 
-st.subheader("Bar Chart")
-st.bar_chart(df_uebersicht)
+#st.subheader("Bar Chart")
+#st.bar_chart(df_uebersicht)
+
+# Farbpalette für die Kategorien
+#color_palette = {
+#    "Gods": "blue",
+#    "Creatures": "orange",
+#    "Titans": "green",
+#    "Heroes": "purple",
+#}
+
+# Daten für das Balkendiagramm vorbereiten
+#games = list(st.session_state.game_data.keys()) #KEYS sind die Schlüsselnummern
+#attempts = [st.session_state.game_data[game]["Runden"] for game in games]
+#categories = [st.session_state.game_data[game]["Kategorie"] for game in games]
+
+# Balkendiagramm erstellen
+#fig, ax = plt.subplots()
+#for i, game in enumerate(games):
+#    ax.bar(game, attempts[i], color=color_palette[categories[i]], label=categories[i])
+
+# Diagramm beschriften
+#ax.set_title("Runden pro Spiel und Kategorie")
+#ax.set_xlabel("Spielnummer")
+#ax.set_ylabel("Runden")
+#ax.legend()
+#st.pyplot(fig)
 
 
-#test jule #funktioniert nur nicht wenn keine games gespielt wurden
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#####
+#test jule
 attempts_data = st.session_state.attempts_per_game #attempts per game
 test = pd.DataFrame(attempts_data, columns=["Attempts"]) 
 
