@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from unicodedata import category
 
 ##STATISTIK ERST AKTUALISIERT WENN AUF "NEW GAME" GEKLICKT WIRD
 
@@ -21,18 +20,8 @@ if "input" in st.session_state:
 else:
     st.write("No games were played yet.")
 
-#if "rounds_per_category" not in st.session_state:
- #   st.session_state.rounds_per_category = {"Gods": 0, "Titans": 0, "Creatures": 0, "Heroes": 0}
-
-#if "games_per_category" not in st.session_state:
-#    st.session_state.games_per_category = {"Gods": 0, "Titans": 0, "Creatures": 0, "Heroes": 0}
-
-
 # Tabelleninhalte initialisieren
-tabellen_daten = {
-    'Gesamtzahl der Spiele': [number_games],
-    #'Category': [st.session_state.games_per_category["Gods", "Titans", "Creatures", "Heroes"]],
-}
+tabellen_daten = {'Gesamtzahl der Spiele': [number_games]}
 
 # Durchschnittliche Rateversuche pro Spiel
 if "attempts_per_game" in st.session_state:
@@ -43,23 +32,15 @@ if "attempts_per_game" in st.session_state:
 
     # Spalte zur Tabelle hinzufügen
     tabellen_daten['Durchschnittliche Rateversuche'] = [average_attempts]
-###
-# Tabelle
-chart_data = pd.DataFrame(tabellen_daten, columns = ["Gods","Titans","Heroes","Creatures"])
-#chart_data = pd.DataFrame({
-#    "Kategorie": ["Gods", "Titans", "Heroes", "Creatures"],
-#    "Anzahl Spiele": [st.session_state.games_per_category[kategorie] for kategorie in ["Gods", "Titans", "Heroes", "Creatures"]]
-#})
 
-st.dataframe(chart_data)
+# Tabelle
+df_uebersicht = pd.DataFrame(tabellen_daten)
+
+st.dataframe(df_uebersicht)
 
 st.subheader("Bar Chart")
-st.bar_chart(chart_data, y_label = 'Rounds played', stack = False)
+st.bar_chart(df_uebersicht, stack=False)
 
-
-
-
-# bei dem stack dann halt die verschiedenen Kategorien
 # Durchschnittliche Rateversuche pro Spiel
 #if "attempts_per_game" in st.session_state:  # Überprüfen, ob 'attempts_per_game' existiert
 #    average_attempts = np.mean(st.session_state.attempts_per_game)  # Berechnung des Durchschnitts; np -> Durchschnitt der Rateversuche pro Spiel zu berechnen.
