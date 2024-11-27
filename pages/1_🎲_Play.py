@@ -232,9 +232,27 @@ def on_option_change():
 
 
 def main():
+    custom_css = """
+    <head>
+    <link href="https://fonts.googleapis.com/css2?family=Caesar+Dressing&display=swap" rel="stylesheet">
+    <style>
+    .my-container {
+     background: rgba(255, 255, 255, 0.0);
+     padding: 20px;
+     border-radius: 5px;
+     color: rgba(7, 69, 110, 1);
+     text-align: center;
+     font-family: "sophia", sans serif;
+    h1 {font-family: "Caesar Dressing", system-ui;}
+    }
+    </style>
+    </head>
+    """
     global info_bottom # mp: global variable for the bottom note
     # before the first game
 
+    # Apply the custom CSS
+    st.markdown(custom_css, unsafe_allow_html=True)
 
     if "goal" not in st.session_state:
         initial_option = 'Gods' #mp: initial theme
@@ -242,11 +260,12 @@ def main():
         st.session_state.option = initial_option
         st.session_state.time_start = time.time() #gives current date and time!
         initial_state()
-    st.write(
-        """
-        # :blue[Guess Figures of Greek Mythology]
-        """
-    )
+
+    st.markdown('''
+    <div class = "my-container">
+        <h1>Guess Figures of Greek Mythology 🏛️⚡</h1>
+    </div>
+    ''', unsafe_allow_html=True)
     #mp enables user to choose theme/option
     st.markdown("<h3 style='font-size:16px;'>Choose a Figure you would like to guess to get started<br>(Do not change Figure during a game round to avoid inconveniences.)</h3>", unsafe_allow_html=True)
     st.selectbox(

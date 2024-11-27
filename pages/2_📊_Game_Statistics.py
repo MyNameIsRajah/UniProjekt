@@ -2,14 +2,55 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import base64
 
 
 ##STATISTIK ERST AKTUALISIERT WENN AUF "NEW GAME" GEKLICKT WIRD
-
+# Define your custom CSS
 # mp: tab name and icon
 st.set_page_config(page_title="Game Statistics", page_icon="📊")
 
-st.subheader ("Your Statistics")
+custom_css = """
+<head>
+<link href="https://fonts.googleapis.com/css2?family=Caesar+Dressing&display=swap" rel="stylesheet">
+<style>
+.my-container {
+ background: rgba(255, 255, 255, 0.0);
+ padding: 100px;
+ border-radius: 5px;
+ color: rgba(7, 69, 110, 1);
+ text-align: center;
+ font-family: "sophia", sans serif;
+h1 {font-family: "Caesar Dressing", system-ui;}
+}
+</style>
+</head>
+"""
+
+# Apply the custom CSS
+st.markdown(custom_css, unsafe_allow_html=True)
+#set background image
+def get_img_as_base64(file):
+    with open(file, "rb") as f:
+        data = f.read()
+    return base64.b64encode(data).decode()
+img = get_img_as_base64("./image.png")
+page_bg_img = f"""
+<style>
+[data-testid="stAppViewContainer"]{{
+background-image: url("data:image/png;base64,{img}");
+background-size: cover;
+}}
+</style>
+"""
+st.markdown(page_bg_img, unsafe_allow_html=True)
+
+st.markdown('''
+<div class = "my-container">
+    <h1>⚡ Your statistics ⚡</h1>
+    
+</div>
+''', unsafe_allow_html=True)
 
 if "input" not in st.session_state:
     st.session_state.input = 0
@@ -129,10 +170,12 @@ attempts_df = pd.DataFrame(attempts_data, columns=["Attempts"])
 themes = st.session_state.theme_per_game 
 data_cat = pd.DataFrame(themes,columns=["category"])
 st.dataframe(data_cat)
-
+#time tracker per game
 time_data = st.session_state.time_per_game
 time_df = pd.DataFrame(time_data,columns=['time'])
 st.dataframe(time_df)
+
+
 games_df = pd.DataFrame(
     {
         "games":[i for i in range(1,number_games+1)]
