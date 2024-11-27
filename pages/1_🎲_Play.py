@@ -146,6 +146,7 @@ def initial_state(post_init=False): #initial_state() dient dazu, den Anfangszust
     st.session_state.maxattempts = 4  # max number of attempts 4
     st.session_state.hint_counter = 0 # Counting hints -- TODO: still to include in stats!! if we want to
     st.session_state.maxhints = 3  # Maximum number of hints
+ 
 
 # neues spiel wird gestartet, input +1 (indem benötigte Variablen in st.session aktualisiert)
 #def restart_game():
@@ -164,7 +165,12 @@ def restart_game():
         st.session_state.attempts_per_game.append(st.session_state.attempt)
     else :
         st.session_state.attempts_per_game.append(st.session_state.attempt)
-
+    #st.session_state.theme_per_game.append(st.session_state.option) #liste mit den themes per game
+    if "theme_per_game" not in st.session_state:
+        st.session_state.theme_per_game = [] 
+        st.session_state.theme_per_game.append(st.session_state.option)
+    else:
+        st.session_state.theme_per_game.append(st.session_state.option)
     theme = st.session_state.option # Access the theme directly from session state
     st.session_state.goal = ziel_figur(theme) # This line changes the goal
     initial_state(post_init=True)

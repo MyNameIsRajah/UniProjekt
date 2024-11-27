@@ -40,34 +40,34 @@ if "attempts_per_game" in st.session_state:
     )
 
     # DataFrame aus game_data erstellen
-    games = list(st.session_state.game_data.keys())
-    attempts = [st.session_state.game_data[game]["Runden"] for game in games]
-    categories = [st.session_state.game_data[game]["Kategorie"] for game in games]
+ #   games = list(st.session_state.game_data.keys())
+  #  attempts = [st.session_state.game_data[game]["Runden"] for game in games]
+   # categories = [st.session_state.game_data[game]["Kategorie"] for game in games]
 
-    df_stats = pd.DataFrame({
-        "Spielnummer": games,
-        "Versuche": attempts,
-        "Kategorie": categories
-    })
+   # df_stats = pd.DataFrame({
+    #    "Spielnummer": games,
+     #   "Versuche": attempts,
+      #  "Kategorie": categories
+    #})
 
     # Balkendiagramm erstellen
-    fig, ax = plt.subplots()
-    for i, game in enumerate(games):
-        ax.bar(game, attempts[i], color=color_palette[categories[i]], label=categories[i])
+    #fig, ax = plt.subplots()
+   # for i, game in enumerate(games):
+      #  ax.bar(game, attempts[i], color=color_palette[categories[i]], label=categories[i])
 
     # Diagramm beschriften
-    ax.set_title("Runden pro Spiel und Kategorie")
-    ax.set_xlabel("Spielnummer")
-    ax.set_ylabel("Runden")
-    ax.legend()
-    st.pyplot(fig)
+    #ax.set_title("Runden pro Spiel und Kategorie")
+    #ax.set_xlabel("Spielnummer")
+    #ax.set_ylabel("Runden")
+    #ax.legend()
+    #st.pyplot(fig)
 
     # Tabelle anzeigen
-    st.dataframe(df_stats)
+    #st.dataframe(df_stats)
 
     # Zusätzliches Balkendiagramm mit Streamlit (optional)
-    st.subheader("Bar Chart (Streamlit)")
-    st.bar_chart(df_stats, x="Spielnummer", y="Versuche", color="Kategorie")
+   # st.subheader("Bar Chart (Streamlit)")
+    #st.bar_chart(df_stats, x="Spielnummer", y="Versuche", color="Kategorie")
     # Spalte zur Tabelle hinzufügen
     #tabellen_daten['Durchschnittliche Rateversuche'] = [average_attempts]
 
@@ -125,13 +125,19 @@ if "attempts_per_game" in st.session_state:
 #test jule
 attempts_data = st.session_state.attempts_per_game #attempts per game
 test = pd.DataFrame(attempts_data, columns=["Attempts"]) 
+themes = st.session_state.theme_per_game 
+data_cat = pd.DataFrame(themes,columns=["category"])
+st.dataframe(data_cat)
 
 test2 = pd.DataFrame(
     {
         "games":[i for i in range(1,number_games+1)]
     }
 )
-data = pd.concat([test2, test], axis=1)
+
+data = pd.concat([test2, test, data_cat], axis=1)
+#data = pd.concat([data1, themes], axis=1)
+
 #übernommen von oben
 if "attempts_per_game" in st.session_state:
     average_attempts = np.mean(st.session_state.attempts_per_game)
@@ -151,7 +157,8 @@ st.bar_chart(
     x= "games",
     y= "Attempts",
     x_label="games played",
-    y_label="attempts per game"
+    y_label="attempts per game",
+    color="category"
 )
 
 # Durchschnittliche Rateversuche pro Spiel

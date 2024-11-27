@@ -21,7 +21,6 @@ custom_css = """
  text-align: center;
  font-family: "sophia", sans serif;
 h1 {font-family: "Caesar Dressing", system-ui;}
-h2 {font-family: "Caesar Dressing", system-ui;}
 }
 </style>
 </head>
