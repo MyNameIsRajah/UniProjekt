@@ -189,7 +189,7 @@ def restart_game():
     # Anzahl der Spiele erhöhen:
     st.session_state.input += 1
 
-
+#jule: können wir das auskommentierte hier löschen ????
     # hinweis aus der Liste
 # warum wird hier goal geändert?!?!?
 # mp: this function can be removed, fctnality moved to def main to enable streaming AI hints
@@ -257,17 +257,7 @@ def main():
         # disabled = st.session_state.over, ### st.session_state.attempt > 0, ### If attempts have been made, then disable the selectbox
         on_change = on_option_change #mp: this function will be called when the option/theme is changed
         )
-    
-    # enables user to choose a theme, on_change a new game is automatically initialized
-    #PROBLEM: es wird immernoch die letzte figur benutzt ##mp auskommentiert, siehe st.selectbox oben
-    #option = st.selectbox(" :grey[Choose a Figure you would like to guess to get started]", ("Gods", "Heroes", "Creatures", "Titans"), on_change =restart_game)
-    # Save the selected option to session state
-    #st.session_state.option = option  # Store the option in session state
-  
-    # before the first game mp: auskommentiert - moved and edited at the beginning of def main
-    #if "goal" not in st.session_state:
-     #   st.session_state.goal = ziel_figur(option)
-      #  initial_state()
+
 
     # button to start a new game
     # st.button('New game', on_click=restart_game) #mp: TODO move to other place
