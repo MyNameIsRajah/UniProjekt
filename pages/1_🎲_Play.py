@@ -2,6 +2,7 @@ import streamlit as st
 import random
 from openai import OpenAI
 import base64
+import time
 # mp: tab name and icon
 st.set_page_config(page_title="Play", page_icon="🎲")
 
@@ -160,6 +161,16 @@ def initial_state(post_init=False): #initial_state() dient dazu, den Anfangszust
 
 
 def restart_game(): 
+    #Zeilen um die Zeit zu checken
+    st.session_state.time =time.time() -  st.session_state.time_start
+    st.session_state.time_start = time.time() #gives current date and time!
+    st.write(st.session_state.time) 
+    if "time_per_game" not in st.session_state:
+        st.session_state.time_per_game=[]
+        st.session_state.time_per_game.append(st.session_state.time)
+    else:
+        st.session_state.time_per_game.append(st.session_state.time)
+
     if "attempts_per_game" not in st.session_state:
         st.session_state.attempts_per_game = []
         st.session_state.attempts_per_game.append(st.session_state.attempt)
@@ -223,10 +234,13 @@ def on_option_change():
 def main():
     global info_bottom # mp: global variable for the bottom note
     # before the first game
+
+
     if "goal" not in st.session_state:
         initial_option = 'Gods' #mp: initial theme
         st.session_state.goal = ziel_figur(initial_option)
         st.session_state.option = initial_option
+        st.session_state.time_start = time.time() #gives current date and time!
         initial_state()
     st.write(
         """

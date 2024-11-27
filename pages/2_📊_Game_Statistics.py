@@ -38,6 +38,7 @@ if "attempts_per_game" in st.session_state:
     st.write(
         f"Average number of guesses per game: {average_attempts:.2f}"
     )
+    
 
     # DataFrame aus game_data erstellen
  #   games = list(st.session_state.game_data.keys())
@@ -124,18 +125,21 @@ if "attempts_per_game" in st.session_state:
 #####
 #test jule
 attempts_data = st.session_state.attempts_per_game #attempts per game
-test = pd.DataFrame(attempts_data, columns=["Attempts"]) 
+attempts_df = pd.DataFrame(attempts_data, columns=["Attempts"]) 
 themes = st.session_state.theme_per_game 
 data_cat = pd.DataFrame(themes,columns=["category"])
 st.dataframe(data_cat)
 
-test2 = pd.DataFrame(
+time_data = st.session_state.time_per_game
+time_df = pd.DataFrame(time_data,columns=['time'])
+st.dataframe(time_df)
+games_df = pd.DataFrame(
     {
         "games":[i for i in range(1,number_games+1)]
     }
 )
 
-data = pd.concat([test2, test, data_cat], axis=1)
+data = pd.concat([games_df, attempts_df, data_cat], axis=1)
 #data = pd.concat([data1, themes], axis=1)
 
 #übernommen von oben
