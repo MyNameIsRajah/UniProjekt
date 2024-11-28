@@ -16,7 +16,7 @@ custom_css = """
 <style>
 .my-container {
  background: rgba(255, 255, 255, 0.0);
- padding: 100px;
+ padding: 20px;
  border-radius: 5px;
  color: rgba(7, 69, 110, 1);
  text-align: center;
@@ -26,7 +26,6 @@ h1 {font-family: "Caesar Dressing", system-ui;}
 </style>
 </head>
 """
-
 # Apply the custom CSS
 st.markdown(custom_css, unsafe_allow_html=True)
 #set background image
@@ -52,34 +51,77 @@ st.markdown('''
 </div>
 ''', unsafe_allow_html=True)
 
-if "input" not in st.session_state:
-    st.session_state.input = 0
-
 # Farbpalette für die Kategorien
-color_palette = {
-    "Gods": "blue",
-    "Creatures": "orange",
-    "Titans": "green",
-    "Heroes": "purple",
-}
+#color_palette = {
+ #   "Gods": "blue",
+  #  "Creatures": "orange",
+   # "Titans": "green",
+    #"Heroes": "purple",
+#}
 
 # Anzahl der Spiele
-if "input" in st.session_state:
+if st.session_state.input > 0:
     number_games = st.session_state.input
     st.write(f"Number of games played: {number_games}") # "f" für f-string -> ermöglicht, Variablen direkt in Strings einzubetten.
+    # Durchschnittliche Rateversuche pro Spiel
+    if "attempts_per_game" in st.session_state:
+        average_attempts = np.mean(st.session_state.attempts_per_game)
+        st.write(
+            f"Average number of guesses per game: {average_attempts:.2f}"
+        )
+    #test jule
+    attempts_data = st.session_state.attempts_per_game #attempts per game
+    attempts_df = pd.DataFrame(attempts_data, columns=["Attempts"]) 
+    themes = st.session_state.theme_per_game 
+    data_cat = pd.DataFrame(themes,columns=["category"])
+    st.dataframe(data_cat)
+    #time tracker per game
+    time_data = st.session_state.time_per_game
+    time_df = pd.DataFrame(time_data,columns=['time'])
+    st.dataframe(time_df)
+
+
+    games_df = pd.DataFrame(
+        {
+            "games":[i for i in range(1,number_games+1)]
+        }
+    )
+
+    data = pd.concat([games_df, attempts_df, data_cat], axis=1)
+
+
+#show dataframe
+    st.dataframe(data)
+    st.subheader("Bar Chart jule")
+    st.bar_chart(
+        data,
+        x= "games",
+        y= "Attempts",
+        x_label="games played",
+        y_label="attempts per game",
+        color="category"
+    )
+#if no games were played yet display a button to the play page:
 else:
-    st.write("No games were played yet.")
+    st.markdown('''
+    <div class = "my-container">
+        <h2>You need to play a game to see any statistics</h2>  
+    </div>
+    ''', unsafe_allow_html=True)
+    _,col1,_ = st.columns(3)
+    with col1:
+        if st.button("Play a game") :
+          st.switch_page("pages/1_🎲_Play.py")
+
+
+
+
+
 
 # Tabelleninhalte initialisieren
 #tabellen_daten = {'Gesamtzahl der Spiele': [number_games]}
 
-# Durchschnittliche Rateversuche pro Spiel
-if "attempts_per_game" in st.session_state:
-    average_attempts = np.mean(st.session_state.attempts_per_game)
-    st.write(
-        f"Average number of guesses per game: {average_attempts:.2f}"
-    )
-    
+
 
     # DataFrame aus game_data erstellen
  #   games = list(st.session_state.game_data.keys())
@@ -163,50 +205,6 @@ if "attempts_per_game" in st.session_state:
 
 
 
-#####
-#test jule
-attempts_data = st.session_state.attempts_per_game #attempts per game
-attempts_df = pd.DataFrame(attempts_data, columns=["Attempts"]) 
-themes = st.session_state.theme_per_game 
-data_cat = pd.DataFrame(themes,columns=["category"])
-st.dataframe(data_cat)
-#time tracker per game
-time_data = st.session_state.time_per_game
-time_df = pd.DataFrame(time_data,columns=['time'])
-st.dataframe(time_df)
-
-
-games_df = pd.DataFrame(
-    {
-        "games":[i for i in range(1,number_games+1)]
-    }
-)
-
-data = pd.concat([games_df, attempts_df, data_cat], axis=1)
-#data = pd.concat([data1, themes], axis=1)
-
-#übernommen von oben
-if "attempts_per_game" in st.session_state:
-    average_attempts = np.mean(st.session_state.attempts_per_game)
-    st.write(
-        f"Average number of guesses per game: {average_attempts:.2f}"
-    )
-
-    # Spalte zur Tabelle hinzufügen
-    #tabellen_data['Rateversuche'] = [st.session_state.attempts_per_game]
-
-
-#show dataframe
-st.dataframe(data)
-st.subheader("Bar Chart jule")
-st.bar_chart(
-    data,
-    x= "games",
-    y= "Attempts",
-    x_label="games played",
-    y_label="attempts per game",
-    color="category"
-)
 
 # Durchschnittliche Rateversuche pro Spiel
 #if "attempts_per_game" in st.session_state:  # Überprüfen, ob 'attempts_per_game' existiert
