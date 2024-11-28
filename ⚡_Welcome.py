@@ -35,7 +35,7 @@ st.markdown('''
     <h1>Greek Mythology 🏛️⚡</h1>
     <h2>Welcome to our guessing game about greek mythology. Can you guess the mythological figures I am thinking about?</h2>
     <p>You will have 4 attempts and 3 possible hints if you need them.</p>
-    <p>You can choose between guessing a greek God (for example Zeus), a hero (Herakles), a creature (Medusa) or a titan (Gaia)</p>
+    <p>You can choose between guessing a greek god (for example Zeus), a hero (Herakles), a creature (Medusa) or a titan (Gaia)</p>
 </div>
 ''', unsafe_allow_html=True)
 
