@@ -6,10 +6,10 @@ import base64
 
 
 ##STATISTIK ERST AKTUALISIERT WENN AUF "NEW GAME" GEKLICKT WIRD
-# Define your custom CSS
+
 # mp: tab name and icon
 st.set_page_config(page_title="Game Statistics", page_icon="📊")
-
+#cutsom css for the title font, colours etc. 
 custom_css = """
 <head>
 <link href="https://fonts.googleapis.com/css2?family=Caesar+Dressing&display=swap" rel="stylesheet">
@@ -33,7 +33,7 @@ def get_img_as_base64(file):
     with open(file, "rb") as f:
         data = f.read()
     return base64.b64encode(data).decode()
-img = get_img_as_base64("./image.png")
+img = get_img_as_base64("./pattern(3).png")
 page_bg_img = f"""
 <style>
 [data-testid="stAppViewContainer"]{{
@@ -46,8 +46,7 @@ st.markdown(page_bg_img, unsafe_allow_html=True)
 
 st.markdown('''
 <div class = "my-container">
-    <h1>⚡ Your statistics ⚡</h1>
-    
+    <h1>⚡ Your statistics ⚡</h1>    
 </div>
 ''', unsafe_allow_html=True)
 
@@ -74,11 +73,12 @@ if st.session_state.input > 0:
     attempts_df = pd.DataFrame(attempts_data, columns=["Attempts"]) 
     themes = st.session_state.theme_per_game 
     data_cat = pd.DataFrame(themes,columns=["category"])
-    st.dataframe(data_cat)
     #time tracker per game
+
+    #TODO: nochmal checken obs wirklich sekunden oder milisek sind, ggbfs umrechnen?
     time_data = st.session_state.time_per_game
-    time_df = pd.DataFrame(time_data,columns=['time'])
-    st.dataframe(time_df)
+    time_df = pd.DataFrame(time_data,columns=['time(s)'])
+    
 
 
     games_df = pd.DataFrame(
@@ -87,20 +87,34 @@ if st.session_state.input > 0:
         }
     )
 
-    data = pd.concat([games_df, attempts_df, data_cat], axis=1)
+    data = pd.concat([games_df, attempts_df, data_cat, time_df], axis=1)
 
 
 #show dataframe
+ 
     st.dataframe(data)
-    st.subheader("Bar Chart jule")
-    st.bar_chart(
-        data,
-        x= "games",
-        y= "Attempts",
-        x_label="games played",
-        y_label="attempts per game",
-        color="category"
-    )
+    
+    st.subheader("Your games so far:")
+    col1, col2 = st.columns(2)
+    with col1:
+        st.bar_chart(
+         data,
+         x= "games",
+         y= "Attempts",
+         x_label="games played",
+         y_label="attempts per game",
+         color="category"
+     )
+        #this looks shit maybe without this one??
+    with col2:
+        st.bar_chart(
+          data,
+          x= "games",
+          y= "time(s)",
+          x_label="games played",
+          y_label="time(s) per game",
+          color="category"
+      )
 #if no games were played yet display a button to the play page:
 else:
     st.markdown('''
@@ -110,7 +124,7 @@ else:
     ''', unsafe_allow_html=True)
     _,col1,_ = st.columns(3)
     with col1:
-        if st.button("Play a game") :
+        if st.button("Play a game", icon= "🎲") :
           st.switch_page("pages/1_🎲_Play.py")
 
 
