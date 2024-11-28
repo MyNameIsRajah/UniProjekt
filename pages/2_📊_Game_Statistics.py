@@ -33,7 +33,7 @@ def get_img_as_base64(file):
     with open(file, "rb") as f:
         data = f.read()
     return base64.b64encode(data).decode()
-img = get_img_as_base64("./pattern(3).png")
+img = get_img_as_base64("./hintergrund.png")
 page_bg_img = f"""
 <style>
 [data-testid="stAppViewContainer"]{{
@@ -71,6 +71,17 @@ if st.session_state.input > 0:
         st.write(
             f"Average number of guesses per game: {average_attempts:.2f}"
         )
+
+# Dividing the list into rounds
+   # rounds = []
+    #index = 0
+    #for round_size in st.session_state.attempts_per_game:
+     #   rounds.append(st.session_state.list_quality[index:index + round_size])
+      #  index += round_size  # Move the index forward by the size of the current round
+
+# Display the rounds
+   # st.write(rounds)
+
     #test jule
     attempts_data = st.session_state.attempts_per_game #attempts per game
     attempts_df = pd.DataFrame(attempts_data, columns=["Attempts"]) 
@@ -78,7 +89,7 @@ if st.session_state.input > 0:
     data_cat = pd.DataFrame(themes,columns=["category"])
     #time tracker per game
     
-    #TODO: nochmal checken obs wirklich sekunden oder milisek sind, ggbfs umrechnen?
+    #TODO: nochmal checken obs wirklich sekunden oder sek sind, ggbfs umrechnen?
     time_data = st.session_state.time_per_game
     time_df = pd.DataFrame(time_data,columns=['time(s)'])
     
@@ -119,93 +130,30 @@ if st.session_state.input > 0:
           y_label="time(s) per game",
           color="category"
       )
+        #quality of guesses
+    st.subheader("Here you can see the quality of your guesses")
+#vorhin wurde der noch richtig angezeigt, jetzt ist di eleine weird kp wiesoooooo
+    df = pd.DataFrame(
+        {"game":[i for i in range(1,len(st.session_state.list_quality)+1)],
+         "Points for quality": st.session_state.list_quality})
+    st.line_chart(df, x="game", y ="Points for quality")
+    st.caption("4 points: You guessed correct.")
+    st.caption("3 points: Your guess was a mythological figure from the right category, just not the right one.")
+    st.caption("2 points: Your guess was a mythological figure, just from the wrong category.")
+    st.caption("1 points: Your guess was no mythological figure to our knowledge.")
 #if no games were played yet display a button to the play page:
 else:
     st.markdown('''
     <div class = "my-container">
-        <h2>You need to play a game to see any statistics</h2>  
+        <h2>You need to play a game to see any statistics</h2> 
     </div>
     ''', unsafe_allow_html=True)
+
     _,col1,_ = st.columns(3)
     with col1:
         if st.button("Play a game", icon= "🎲") :
           st.switch_page("pages/1_🎲_Play.py")
 
-
-
-
-
-
-# Tabelleninhalte initialisieren
-#tabellen_daten = {'Gesamtzahl der Spiele': [number_games]}
-
-
-
-    # DataFrame aus game_data erstellen
- #   games = list(st.session_state.game_data.keys())
-  #  attempts = [st.session_state.game_data[game]["Runden"] for game in games]
-   # categories = [st.session_state.game_data[game]["Kategorie"] for game in games]
-
-   # df_stats = pd.DataFrame({
-    #    "Spielnummer": games,
-     #   "Versuche": attempts,
-      #  "Kategorie": categories
-    #})
-
-    # Balkendiagramm erstellen
-    #fig, ax = plt.subplots()
-   # for i, game in enumerate(games):
-      #  ax.bar(game, attempts[i], color=color_palette[categories[i]], label=categories[i])
-
-    # Diagramm beschriften
-    #ax.set_title("Runden pro Spiel und Kategorie")
-    #ax.set_xlabel("Spielnummer")
-    #ax.set_ylabel("Runden")
-    #ax.legend()
-    #st.pyplot(fig)
-
-    # Tabelle anzeigen
-    #st.dataframe(df_stats)
-
-    # Zusätzliches Balkendiagramm mit Streamlit (optional)
-   # st.subheader("Bar Chart (Streamlit)")
-    #st.bar_chart(df_stats, x="Spielnummer", y="Versuche", color="Kategorie")
-    # Spalte zur Tabelle hinzufügen
-    #tabellen_daten['Durchschnittliche Rateversuche'] = [average_attempts]
-
-###
-# Tabelle
-#df_uebersicht = pd.DataFrame(tabellen_daten)
-
-#st.dataframe(df_uebersicht)
-
-#st.subheader("Bar Chart")
-#st.bar_chart(df_uebersicht)
-
-# Farbpalette für die Kategorien
-#color_palette = {
-#    "Gods": "blue",
-#    "Creatures": "orange",
-#    "Titans": "green",
-#    "Heroes": "purple",
-#}
-
-# Daten für das Balkendiagramm vorbereiten
-#games = list(st.session_state.game_data.keys()) #KEYS sind die Schlüsselnummern
-#attempts = [st.session_state.game_data[game]["Runden"] for game in games]
-#categories = [st.session_state.game_data[game]["Kategorie"] for game in games]
-
-# Balkendiagramm erstellen
-#fig, ax = plt.subplots()
-#for i, game in enumerate(games):
-#    ax.bar(game, attempts[i], color=color_palette[categories[i]], label=categories[i])
-
-# Diagramm beschriften
-#ax.set_title("Runden pro Spiel und Kategorie")
-#ax.set_xlabel("Spielnummer")
-#ax.set_ylabel("Runden")
-#ax.legend()
-#st.pyplot(fig)
 
 
 

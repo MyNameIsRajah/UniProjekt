@@ -127,20 +127,10 @@ def ziel_figur(theme):
 
 # Aufbau für ein neues spiel
 def initial_state(post_init=False): #initial_state() dient dazu, den Anfangszustand deines Spiels zu definiere
-    if not post_init: ##Woher kommt das post_init?
-        # st.session_state.update (
-        #     {
-        #         "games played": 0,
-        #         "attempt": 0,
-        #         "over": False,
-        #         "hint_index": 2,
-        #         "maxattempts": 4,
-        #         "input": 0, # Initialisierung von Input
-        #     }
-        # )
-    # neues spiel neue Lösung - AUSKOMMENTIERT UM KOMPAKTE VERSION AUSZUPROBIEREN 
-    # #mp 24/11: voherige version wieder hergestellt
+    if not post_init:
         st.session_state.input = 0
+        if "list_quality" not in st.session_state:
+            st.session_state.list_quality =[]
     st.session_state.games_played = 0 #von Hajar
     st.session_state.attempt = 0  # zählt die attempts pro spiel
     st.session_state.over = False
@@ -150,21 +140,8 @@ def initial_state(post_init=False): #initial_state() dient dazu, den Anfangszust
     st.session_state.maxhints = 3  # Maximum number of hints
  
 
-# neues spiel wird gestartet, input +1 (indem benötigte Variablen in st.session aktualisiert)
-#def restart_game():
-#    if "attempts_per_game" not in st.session_state:
-#        st.session_state.attempts_per_game = []
-#        st.session_state.attempts_per_game.append(st.session_state.attempt)
-#    theme = st.session_state.option  # Access the theme directly from session state
-#    st.session_state.goal = ziel_figur(theme)  # This line changes the goal
-#    initial_state(post_init=True)
-#    st.session_state.input += 1  # counts how many games have been played - IN TOTAL?
-
-
-def restart_game(): 
-    #Zeilen um die Zeit zu checken
-    #TODO zeit fehler
-   
+#mp collect data for statistics
+def collect_stats():
     st.session_state.time =(time.time() -  st.session_state.time_start)
     st.session_state.time_start = time.time() #gives current date and time!
     
@@ -185,42 +162,19 @@ def restart_game():
         st.session_state.theme_per_game.append(st.session_state.option)
     else:
         st.session_state.theme_per_game.append(st.session_state.option)
-    theme = st.session_state.option # Access the theme directly from session state
-    st.session_state.goal = ziel_figur(theme) # This line changes the goal
-    initial_state(post_init=True)
 
     # Anzahl der Spiele erhöhen:
     st.session_state.input += 1
 
-#jule: können wir das auskommentierte hier löschen ????
-    # hinweis aus der Liste
-# warum wird hier goal geändert?!?!?
-# mp: this function can be removed, fctnality moved to def main to enable streaming AI hints
-# def get_hint(hint_index):  
-   
-#     chat_completion = client.chat.completions.create(  
-#         model=model,
-#         messages=[
-#                     {"role": "system", "content": "You are an expert on Greek mythology. Provide creative hints about Greek mythology characters."},
-#                     {"role": "user", "content": f"Give me a hint about {st.session_state.goal}."}
-#                 ]
-#     )   
-#     return chat_completion.choices[0].message.content
-    # if goal in hinweise:
-    #     #Zugriff aus Hinweis in umgekehrter Reihenfolge (3-2-1)
-    #     return hinweise [goal][2 - hint_index]
-    # else:
-    #     return "Für dieses Ziel sind keine Hinweise verfügbar." # wird doch eigentlich nie erreicht oder? Schafft ihr es den dude zusowas zu bringen?
-
-# ALSOOO zum Verständnis, as far as i understood:
-#Hier greifst du auf hinweise[st.session_state.goal] zu, um den Hinweis für das aktuelle Ziel abzurufen. Wenn der Schlüssel st.session_state.goal nicht im Dictionary hinweise existiert, wird ein neuer Eintrag erstellt, und dies könnte die unerwartete Änderung von session.state.goal verursachen.
-# Änderung: st.session_state.goal immer im Dictionary hinweise vorhanden ist, bevor du darauf zugreifs
-
+def restart_game(): 
+    theme = st.session_state.option # Access the theme directly from session state
+    st.session_state.goal = ziel_figur(theme) # This line changes the goal
+    initial_state(post_init=True)
 
 #mp function to handle category/option/theme change
 def on_option_change():
     note = st.empty()
-    if st.session_state.attempt == 0: ### If no attempts have been made in this game, then change the goal (hints are still countig down)
+    if st.session_state.attempt == 0: # If no attempts have been made in this game, then change the goal (hints are still counting down)
         st.session_state.goal = ziel_figur(st.session_state.option)
         st.session_state.hint_index = 2  # mp index = 2 um mit dem 3. hint zu starten
     elif st.session_state.over: #mp start new game if the current game is over and the user selects a new option        
@@ -228,7 +182,7 @@ def on_option_change():
         note.warning(note_text)
         restart_game()
     else: #mp if attempts have already been made and the user selects a new option, then restart the game. Current game will count as lost      
-        note_text = f"Game restarted with new theme {st.session_state.option} - previous game counted as lost. 😢"
+        note_text = f"Game restarted with new theme {st.session_state.option} - previous game discarded. 😢"
         note.warning(note_text)
         restart_game()
 
@@ -280,10 +234,6 @@ def main():
         on_change = on_option_change #mp: this function will be called when the option/theme is changed
         )
 
-
-    # button to start a new game
-    # st.button('New game', on_click=restart_game) #mp: TODO move to other place
-    #hint_text = st.empty()
 
     # mp: puts divider between selectbox and chat
     st.divider()
@@ -342,15 +292,44 @@ def main():
                         st.write(user_input)
                     # mp: user did win
                     if user_input.lower() == st.session_state.goal.lower():
+                        st.session_state.quality = "4" # correct #jv: rates quality of guess, if correct: 4 points
+                        st.session_state.list_quality.append(st.session_state.quality)
                         with st.chat_message("assistant"):
                             st.write("\U0001F389 Correct! You've guessed it!") #mp unicode for emoji party popper
                         st.balloons()
                         st.session_state.over = True
-                        # Automatischer Wechsel zur nächsten Frage ##mp auskommentiert bc doesnt work 
-                        #theme = st.session_state.option
-                        #st.session_state.goal = ziel_figur(theme)
-                    # mp: user did not win, attempts 4 
+                        collect_stats()
+                    # mp: user did not guess correct, attempts 4 
                     else:
+
+                        #jv: check quality of guesses
+                        #jv: save current themelist in categorie
+                        if st.session_state.option== "Gods":
+                            categorie = Gods
+                        elif st.session_state.option== "Titans":
+                            categorie = Titans
+                        elif st.session_state.option== "Creatures":
+                            categorie = Creatures
+                        else:
+                          categorie = Heroes
+                        #jv: compare theme list to users input if user input for example: the goal is hera, theme is therefore gods, if the user guesses Zeus which is in Gods it is a good guess
+                        if user_input.capitalize() in categorie:
+                            st.session_state.quality = "3"
+                        #jv: if the users input is in any theme just not the right one the guess is ok: the goal is hera, theme is god but the user guesses medusa 
+                        elif user_input.capitalize() in Gods:
+                            st.session_state.quality = "2"
+                        elif user_input.capitalize() in Heroes:
+                            st.session_state.quality = "2"
+                        elif user_input.capitalize() in Titans:
+                            st.session_state.quality = "2"
+                        elif user_input.capitalize() in Creatures:
+                            st.session_state.quality = "2"
+                        #jv: guess doesnt exist in our knowledge base guess is bad
+                        else:
+                            st.session_state.quality = "1"
+                        st.session_state.list_quality.append(st.session_state.quality)
+                       
+
                         st.session_state.attempt += 1
                         #mp limit st.session_state.attempt to st.session_state.maxattempts 
                         if st.session_state.attempt > st.session_state.maxattempts:
@@ -359,10 +338,11 @@ def main():
                         if st.session_state.attempt < st.session_state.maxattempts:
                             with st.chat_message("assistant"):
                                 st.write(" :blue[Nope, try again!]")
-                        else:
+                        else: #mp user did not win
                             with st.chat_message("assistant"):
                                 st.write(f" :blue[Sorry, you lost! The correct answer was:] {st.session_state.goal}")
-                            st.session_state.over = True   
+                            st.session_state.over = True  
+                            collect_stats() 
                              
       # Display attempts left
     # #if 'attempt' in st.session_state:
@@ -405,7 +385,7 @@ def get_img_as_base64(file):
     with open(file, "rb") as f:
         data = f.read()
     return base64.b64encode(data).decode()
-img = get_img_as_base64("./image.png")
+img = get_img_as_base64("./Background_play.png")
 page_bg_img = f"""
 <style>
 [data-testid="stAppViewContainer"]{{
@@ -419,3 +399,9 @@ st.markdown(page_bg_img, unsafe_allow_html=True)
 if __name__ == '__main__':
     main()
 
+
+
+
+
+
+    
