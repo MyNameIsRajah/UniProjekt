@@ -57,6 +57,9 @@ st.markdown('''
    # "Titans": "green",
     #"Heroes": "purple",
 #}
+if "input" not in st.session_state:
+    st.session_state.input = 0
+
 
 # Anzahl der Spiele
 if st.session_state.input > 0:
@@ -74,11 +77,12 @@ if st.session_state.input > 0:
     themes = st.session_state.theme_per_game 
     data_cat = pd.DataFrame(themes,columns=["category"])
     #time tracker per game
-
+    
     #TODO: nochmal checken obs wirklich sekunden oder milisek sind, ggbfs umrechnen?
     time_data = st.session_state.time_per_game
     time_df = pd.DataFrame(time_data,columns=['time(s)'])
     
+   
 
 
     games_df = pd.DataFrame(

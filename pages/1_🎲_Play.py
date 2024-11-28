@@ -3,6 +3,7 @@ import random
 from openai import OpenAI
 import base64
 import time
+
 # mp: tab name and icon
 st.set_page_config(page_title="Play", page_icon="🎲")
 
@@ -162,9 +163,11 @@ def initial_state(post_init=False): #initial_state() dient dazu, den Anfangszust
 
 def restart_game(): 
     #Zeilen um die Zeit zu checken
-    st.session_state.time =time.time() -  st.session_state.time_start
+    #TODO zeit fehler
+   
+    st.session_state.time =(time.time() -  st.session_state.time_start)
     st.session_state.time_start = time.time() #gives current date and time!
-    st.write(st.session_state.time) 
+    
     if "time_per_game" not in st.session_state:
         st.session_state.time_per_game=[]
         st.session_state.time_per_game.append(st.session_state.time)
