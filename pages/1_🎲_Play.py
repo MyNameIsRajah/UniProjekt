@@ -234,7 +234,7 @@ def main():
             user_input = st.chat_input("Type your guess or type 'hint'")
             if st.button("I give up"): 
                 st.session_state.over = True 
-                st.write(f" :blue The solution is: {st.session_state.goal}")
+                st.write(f" :blue The solution is: {st.session_state.goal}. If you want to try another round click on 'Start a New Game'. You can now choose another Category. ")
                 collect_stats()
             if user_input:
                 # Game-chat logic
@@ -291,7 +291,7 @@ def main():
                         st.session_state.quality = 4 # correct # rates quality of guess, if correct: 4 points
                         st.session_state.list_quality.append(st.session_state.quality)
                         with st.chat_message("assistant"):
-                            st.write("\U0001F389 Correct! You've guessed it!")  # unicode for emoji party popper
+                            st.write("\U0001F389 Correct! You've guessed it! If you want to try another round click on 'Start a New Game'. You can now choose another Category.")  # unicode for emoji party popper
                         st.balloons()
                         st.session_state.over = True
                         collect_stats()
@@ -335,7 +335,7 @@ def main():
                                 st.write(" :blue[Nope, try again!]")
                         else:  # user did not win
                             with st.chat_message("assistant"):
-                                st.write(f" :blue[Sorry, you lost! The correct answer was:] {st.session_state.goal}")
+                                st.write(f" :blue[Sorry, you lost! The correct answer was:] {st.session_state.goal}. If you want to try another round click on 'Start a New Game'. You can now choose another Category. ")
                             st.session_state.over = True
                             collect_stats()
 
