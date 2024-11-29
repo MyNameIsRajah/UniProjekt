@@ -242,6 +242,10 @@ def main():
     with st.container(): 
         if not st.session_state.over: # mp when game is over, container is gone
             user_input = st.chat_input("Type your guess or type 'hint'")
+            if st.button("I give up"): 
+                st.session_state.over = True 
+                st.write(f" :blue The solution is: {st.session_state.goal}")
+                collect_stats()
             if user_input:
                 # mp: Game-chat logic
                 if user_input.lower() == "hint":
@@ -292,7 +296,7 @@ def main():
                         st.write(user_input)
                     # mp: user did win
                     if user_input.lower() == st.session_state.goal.lower():
-                        st.session_state.quality = "4" # correct #jv: rates quality of guess, if correct: 4 points
+                        st.session_state.quality = 4 # correct #jv: rates quality of guess, if correct: 4 points
                         st.session_state.list_quality.append(st.session_state.quality)
                         with st.chat_message("assistant"):
                             st.write("\U0001F389 Correct! You've guessed it!") #mp unicode for emoji party popper
@@ -314,19 +318,19 @@ def main():
                           categorie = Heroes
                         #jv: compare theme list to users input if user input for example: the goal is hera, theme is therefore gods, if the user guesses Zeus which is in Gods it is a good guess
                         if user_input.capitalize() in categorie:
-                            st.session_state.quality = "3"
+                            st.session_state.quality = 3
                         #jv: if the users input is in any theme just not the right one the guess is ok: the goal is hera, theme is god but the user guesses medusa 
                         elif user_input.capitalize() in Gods:
-                            st.session_state.quality = "2"
+                            st.session_state.quality = 2
                         elif user_input.capitalize() in Heroes:
-                            st.session_state.quality = "2"
+                            st.session_state.quality = 2
                         elif user_input.capitalize() in Titans:
-                            st.session_state.quality = "2"
+                            st.session_state.quality = 2
                         elif user_input.capitalize() in Creatures:
-                            st.session_state.quality = "2"
+                            st.session_state.quality = 2
                         #jv: guess doesnt exist in our knowledge base guess is bad
                         else:
-                            st.session_state.quality = "1"
+                            st.session_state.quality = 1
                         st.session_state.list_quality.append(st.session_state.quality)
                        
 

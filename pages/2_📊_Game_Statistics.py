@@ -73,11 +73,11 @@ if st.session_state.input > 0:
         )
 
 # Dividing the list into rounds
-   # rounds = []
-    #index = 0
-    #for round_size in st.session_state.attempts_per_game:
-     #   rounds.append(st.session_state.list_quality[index:index + round_size])
-      #  index += round_size  # Move the index forward by the size of the current round
+    rounds = []
+    index = 0
+    for round_size in st.session_state.attempts_per_game:
+        rounds.append(st.session_state.list_quality[index:index + round_size])
+        index += round_size  # Move the index forward by the size of the current round
 
 # Display the rounds
    # st.write(rounds)
@@ -132,12 +132,29 @@ if st.session_state.input > 0:
       )
         #quality of guesses
     st.subheader("Here you can see the quality of your guesses")
-#vorhin wurde der noch richtig angezeigt, jetzt ist di eleine weird kp wiesoooooo
+    #jv: simple table guess quality per game
+    guess_labels = {4: 'Excellent', 3: 'Good', 2: 'Ok', 1: 'Bad'}
+    table_data = []
+    for game_idx, guess_list in enumerate(rounds):
+    # Count occurrences of each guess type (1, 2, 3, 4)
+        counts = {label: guess_list.count(value) for value, label in guess_labels.items()}
+        counts['Game'] = f'Game {game_idx + 1}'  # Add game number to the row
+        table_data.append(counts)
+
+    # Convert the data into a DataFrame
+    df = pd.DataFrame(table_data)
+
+    # Reorder columns to match the desired format
+    df = df[['Game', 'Excellent', 'Good', 'Ok', 'Bad']]
+    df =st.dataframe(df, hide_index=True)
+    st.write(df)
+
+#jv: graph of guess quality
     df = pd.DataFrame(
         {"game":[i for i in range(1,len(st.session_state.list_quality)+1)],
          "Points for quality": st.session_state.list_quality})
     st.line_chart(df, x="game", y ="Points for quality")
-    st.caption("4 points: You guessed correct.")
+    st.caption("4 points: You guessed correct. ")
     st.caption("3 points: Your guess was a mythological figure from the right category, just not the right one.")
     st.caption("2 points: Your guess was a mythological figure, just from the wrong category.")
     st.caption("1 points: Your guess was no mythological figure to our knowledge.")
