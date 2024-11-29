@@ -7,41 +7,43 @@ import time
 # mp: tab name and icon
 st.set_page_config(page_title="Play", page_icon="🎲")
 
-
 # mp: initialize chat AI for hints
 # mp: our API key stored in .streamlit/secrets.toml and added to gitignore file to prevent it to be uploaded in github
-# mp checks and gives notification about valid/wrong/missing API key 
-api_key_valid = False # mp: variable for checking if the API key is valid
-info_bottom = "" # mp: text variable for the bottom info area
-model = "gpt-4o-mini" # mp: model for OpenAI chat
+# mp checks and gives notification about valid/wrong/missing API key
+api_key_valid = False  # mp: variable for checking if the API key is valid
+info_bottom = ""  # mp: text variable for the bottom info area
+model = "gpt-4o-mini"  # mp: model for OpenAI chat
+
+
 # mp: function to check if the API key is valid
 def is_api_key_valid(api_key):
     try:
         test_client = OpenAI(api_key=api_key)
         # mp: Makes simple request to test the key
-        test_client.chat.completions.create(  
+        test_client.chat.completions.create(
             model=model,
-            #messages=[]
+            # messages=[]
             messages=[
-                {"role": "system", "content": "You are an expert on Greek mythology. Provide creative hints about Greek mythology characters."},
+                {"role": "system",
+                 "content": "You are an expert on Greek mythology. Provide creative hints about Greek mythology characters."},
                 {"role": "user", "content": "Give me a hint about Zeus."}
             ]
         )
         return True
-    except: 
+    except:
         return False
-    
-if "OPENAI_API_KEY" in st.secrets and st.secrets["OPENAI_API_KEY"]:
-    if is_api_key_valid(st.secrets["OPENAI_API_KEY"]): # mp: checks if the key is valid
-        client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"]) 
-        api_key_valid = True # mp: set variable to true if the key is valid
-        info_bottom = "Valid OpenAI API key found. Hints will be generated from LLM." 
-    else:
-        info_bottom = "Invalid OpenAI API key. Hints will be generated from knowledge base instead of LLM" 
-else:
-    client = OpenAI(api_key="invalid key") 
-    info_bottom = "Missing OpenAI API key. Hints will be generated from knowledge base instead of LLM." 
 
+
+if "OPENAI_API_KEY" in st.secrets and st.secrets["OPENAI_API_KEY"]:
+    if is_api_key_valid(st.secrets["OPENAI_API_KEY"]):  # mp: checks if the key is valid
+        client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+        api_key_valid = True  # mp: set variable to true if the key is valid
+        info_bottom = "Valid OpenAI API key found. Hints will be generated from LLM."
+    else:
+        info_bottom = "Invalid OpenAI API key. Hints will be generated from knowledge base instead of LLM"
+else:
+    client = OpenAI(api_key="invalid key")
+    info_bottom = "Missing OpenAI API key. Hints will be generated from knowledge base instead of LLM."
 
 ##WAS MICH STÖRT!: Die pages App und Play sind basically die gleichen. Können wir das beheben? Ist eine von den beiden nicht zu viel?
 ## GIVE ME THE SOLUTION RIGHT AWAY EINBAUEN?
@@ -49,8 +51,8 @@ else:
 ## FRAGE AN DIE GRUPPE: Should we include a possibility that if the player doesnt want to guess this god to write out / press the button "give me another one" and he will get the answer and jump to the other?
 ## FRAGE AN DIE GRUPPE: Sollten wir dem Benutzer sagen, dass er nach auswahl der Kategorie auf "new game" drücken soll da sonst automatisch mit gott weitergespielt?
 # FRAGE AN DIE GRUPPE : "Whar would you like to guess?" etwas größer machen die Schrift?
-#TO BE DONE : AESTHETIK - HINTERGRUND- THEMATISCH ANPASSEN
-#TO BE DONE: STATISTIK
+# TO BE DONE : AESTHETIK - HINTERGRUND- THEMATISCH ANPASSEN
+# TO BE DONE: STATISTIK
 # TO BE DONE: CHATBOT
 
 
@@ -61,7 +63,7 @@ Heroes = ["Heracles", "Achilles", "Odysseus", "Perseus", "Theseus", "Jason", "At
 Creatures = ["Medusa", "Minotaur", "Pegasus", "Sphinx", "Centaur", "Hydra", "Chimera", "Harpy", "Siren"]
 Titans = ["Gaia", "Uranus", "Cronus", "Rhea", "Nyx", "Erebus", "Prometheus", "Atlas"]
 
-# Hinweise - die dem Spieler gegeben werden sollen 
+# Hinweise - die dem Spieler gegeben werden sollen
 # mp: hints from knowledgebase that will be given in case the API is not responding
 hinweise = {
     # Gods
@@ -121,32 +123,33 @@ def ziel_figur(theme):
     elif theme == "Creatures":
         return random.choice(Creatures)
     else:
-        return random.choice(Heroes) ##Gruppe fragen: Warum heroes? als else?, d.h. wenn ich kein Thema aussuche wird mir Heroes vorgeschlagen/ nicht lieber god? Oder sollte der Spieler nicht gezwungen sein ein Thema auszuwählen? 
-    #else weil das die letzte option ist zuerst ist Gott ausgewählt. 
+        return random.choice(
+            Heroes)  ##Gruppe fragen: Warum heroes? als else?, d.h. wenn ich kein Thema aussuche wird mir Heroes vorgeschlagen/ nicht lieber god? Oder sollte der Spieler nicht gezwungen sein ein Thema auszuwählen?
+    # else weil das die letzte option ist zuerst ist Gott ausgewählt.
 
 
 # Aufbau für ein neues spiel
-def initial_state(post_init=False): #initial_state() dient dazu, den Anfangszustand deines Spiels zu definiere
+def initial_state(post_init=False):  # initial_state() dient dazu, den Anfangszustand deines Spiels zu definiere
     if not post_init:
         st.session_state.input = 0
         if "list_quality" not in st.session_state:
-            st.session_state.list_quality =[]
-    st.session_state.games_played = 0 #von Hajar
+            st.session_state.list_quality = []
+    st.session_state.games_played = 0  # von Hajar
     st.session_state.attempt = 0  # zählt die attempts pro spiel
     st.session_state.over = False
     st.session_state.hint_index = 2  # index = 2 um mit dem 3. hint zu starten
     st.session_state.maxattempts = 4  # max number of attempts 4
-    st.session_state.hint_counter = 0 # Counting hints -- TODO: still to include in stats!! if we want to
+    st.session_state.hint_counter = 0  # Counting hints -- TODO: still to include in stats!! if we want to
     st.session_state.maxhints = 3  # Maximum number of hints
- 
 
-#mp collect data for statistics
+
+# mp collect data for statistics
 def collect_stats():
-    st.session_state.time =(time.time() -  st.session_state.time_start)
-    st.session_state.time_start = time.time() #gives current date and time!
-    
+    st.session_state.time = (time.time() - st.session_state.time_start)
+    st.session_state.time_start = time.time()  # gives current date and time!
+
     if "time_per_game" not in st.session_state:
-        st.session_state.time_per_game=[]
+        st.session_state.time_per_game = []
         st.session_state.time_per_game.append(st.session_state.time)
     else:
         st.session_state.time_per_game.append(st.session_state.time)
@@ -154,11 +157,11 @@ def collect_stats():
     if "attempts_per_game" not in st.session_state:
         st.session_state.attempts_per_game = []
         st.session_state.attempts_per_game.append(st.session_state.attempt)
-    else :
+    else:
         st.session_state.attempts_per_game.append(st.session_state.attempt)
-    #st.session_state.theme_per_game.append(st.session_state.option) #liste mit den themes per game
+    # st.session_state.theme_per_game.append(st.session_state.option) #liste mit den themes per game
     if "theme_per_game" not in st.session_state:
-        st.session_state.theme_per_game = [] 
+        st.session_state.theme_per_game = []
         st.session_state.theme_per_game.append(st.session_state.option)
     else:
         st.session_state.theme_per_game.append(st.session_state.option)
@@ -166,26 +169,27 @@ def collect_stats():
     # Anzahl der Spiele erhöhen:
     st.session_state.input += 1
 
-def restart_game(): 
-    theme = st.session_state.option # Access the theme directly from session state
-    st.session_state.goal = ziel_figur(theme) # This line changes the goal
+
+def restart_game():
+    theme = st.session_state.option  # Access the theme directly from session state
+    st.session_state.goal = ziel_figur(theme)  # This line changes the goal
     initial_state(post_init=True)
 
-#mp function to handle category/option/theme change
+
+# mp function to handle category/option/theme change
 def on_option_change():
     note = st.empty()
-    if st.session_state.attempt == 0: # If no attempts have been made in this game, then change the goal (hints are still counting down)
+    if st.session_state.attempt == 0:  # If no attempts have been made in this game, then change the goal (hints are still counting down)
         st.session_state.goal = ziel_figur(st.session_state.option)
         st.session_state.hint_index = 2  # mp index = 2 um mit dem 3. hint zu starten
-    elif st.session_state.over: #mp start new game if the current game is over and the user selects a new option        
+    elif st.session_state.over:  # mp start new game if the current game is over and the user selects a new option
         note_text = f"New Game started with theme {st.session_state.option} - good luck! 🍀"
         note.warning(note_text)
         restart_game()
-    else: #mp if attempts have already been made and the user selects a new option, then restart the game. Current game will count as lost      
+    else:  # mp if attempts have already been made and the user selects a new option, then restart the game. Current game will count as lost
         note_text = f"Game restarted with new theme {st.session_state.option} - previous game discarded. 😢"
         note.warning(note_text)
         restart_game()
-
 
 
 def main():
@@ -205,17 +209,17 @@ def main():
     </style>
     </head>
     """
-    global info_bottom # mp: global variable for the bottom note
+    global info_bottom  # mp: global variable for the bottom note
     # before the first game
 
     # Apply the custom CSS
     st.markdown(custom_css, unsafe_allow_html=True)
 
     if "goal" not in st.session_state:
-        initial_option = 'Gods' #mp: initial theme
+        initial_option = 'Gods'  # mp: initial theme
         st.session_state.goal = ziel_figur(initial_option)
         st.session_state.option = initial_option
-        st.session_state.time_start = time.time() #gives current date and time!
+        st.session_state.time_start = time.time()  # gives current date and time!
         initial_state()
 
     st.markdown('''
@@ -223,24 +227,25 @@ def main():
         <h1>Guess Figures of Greek Mythology 🏛️⚡</h1>
     </div>
     ''', unsafe_allow_html=True)
-    #mp enables user to choose theme/option
-    st.markdown("<h3 style='font-size:16px;'>Choose a Figure you would like to guess to get started<br>(Do not change Figure during a game round to avoid inconveniences.)</h3>", unsafe_allow_html=True)
+    # mp enables user to choose theme/option
+    st.markdown(
+        "<h3 style='font-size:16px;'>Choose a Figure you would like to guess to get started<br>(Do not change Figure during a game round to avoid inconveniences.)</h3>",
+        unsafe_allow_html=True)
     st.selectbox(
-        label="What would you like to guess? (Do not change during a game round to avoid inconveniences.)", 
-        options=("Gods", "Heroes", "Creatures", "Titans"), 
-        label_visibility="collapsed", #mp hides the label
-        key = "option", #mp This ensures that the selected option is stored in st.session_state.option
+        label="What would you like to guess? (Do not change during a game round to avoid inconveniences.)",
+        options=("Gods", "Heroes", "Creatures", "Titans"),
+        label_visibility="collapsed",  # mp hides the label
+        key="option",  # mp This ensures that the selected option is stored in st.session_state.option
         # disabled = st.session_state.over, ### st.session_state.attempt > 0, ### If attempts have been made, then disable the selectbox
-        on_change = on_option_change #mp: this function will be called when the option/theme is changed
-        )
-
+        on_change=on_option_change  # mp: this function will be called when the option/theme is changed
+    )
 
     # mp: puts divider between selectbox and chat
     st.divider()
 
     # mp: Container for the chat
-    with st.container(): 
-        if not st.session_state.over: # mp when game is over, container is gone
+    with st.container():
+        if not st.session_state.over:  # mp when game is over, container is gone
             user_input = st.chat_input("Type your guess or type 'hint'")
             if st.button("I give up"): 
                 st.session_state.over = True 
@@ -249,20 +254,22 @@ def main():
             if user_input:
                 # mp: Game-chat logic
                 if user_input.lower() == "hint":
-                    st.session_state.hint_index = (st.session_state.hint_index + 1) % 3 #mp iterating through knowledgebase hints, only required if openai not responding
-                     # mp: display user msg
+                    st.session_state.hint_index = (
+                                                              st.session_state.hint_index + 1) % 3  # mp iterating through knowledgebase hints, only required if openai not responding
+                    # mp: display user msg
                     with st.chat_message("user"):
                         st.write(user_input)
                     # mp: AI hint response provided as a stream to simulate chatGPT-like appearance
                     with st.chat_message("assistant"):
-                        #mp added max hint logic
-                        if st.session_state.hint_counter < st.session_state.maxhints: 
-                            st.session_state.hint_counter += 1 
-                            if st.session_state.hint_counter > st.session_state.maxhints: 
-                                st.session_state.hint_counter = st.session_state.maxhints 
-                            # mp: define user message and LLM system
-                            system_message = {"role": "system", "content": "You are an expert on Greek mythology. Provide creative hints about Greek mythology characters."}
-                            user_message = {"role": "user", "content": f"Give me a hint about {st.session_state.goal}."}                    
+                        # mp added max hint logic
+                        if st.session_state.hint_counter < st.session_state.maxhints:
+                            st.session_state.hint_counter += 1
+                            if st.session_state.hint_counter > st.session_state.maxhints:
+                                st.session_state.hint_counter = st.session_state.maxhints
+                                # mp: define user message and LLM system
+                            system_message = {"role": "system",
+                                              "content": "You are an expert on Greek mythology. Provide creative hints about Greek mythology characters."}
+                            user_message = {"role": "user", "content": f"Give me a hint about {st.session_state.goal}."}
                             # mp: Initialize response container
                             hint_response = ""
                             hint_container = st.empty()
@@ -275,7 +282,7 @@ def main():
                                     messages=[system_message, user_message],
                                     stream=True
                                 )
-                                # mp display response in chunks from stream 
+                                # mp display response in chunks from stream
                                 for chunk in response:
                                     delta = chunk.choices[0].delta
                                     if hasattr(delta, "content") and delta.content:
@@ -283,14 +290,14 @@ def main():
                                         hint_container.write(f"Hint: {hint_response}")
                             except:
                                 # mp: if error occures eg api server done, fall back to knowledge base hints & provides note that KB instead of LLM is active
-                                hint_response = hinweise [st.session_state.goal][2 - st.session_state.hint_index]
+                                hint_response = hinweise[st.session_state.goal][2 - st.session_state.hint_index]
                                 st.write(hint_response)
-                                if api_key_valid: ### mp: if the key is valid, then the error is not due to the key
+                                if api_key_valid:  ### mp: if the key is valid, then the error is not due to the key
                                     info_bottom = "Connection error. Hints will be generated from knowledge base instead of LLM."
-                        else: # mp max hints reached
+                        else:  # mp max hints reached
                             # mp: if max hints reached, display message
                             st.write("You have used up your allowed hints!")
-                else: #mp user types a guess in chat 
+                else:  # mp user types a guess in chat
                     # mp: Display user chat (streamlit chat component)
                     with st.chat_message("user"):
                         st.write(user_input)
@@ -299,24 +306,24 @@ def main():
                         st.session_state.quality = 4 # correct #jv: rates quality of guess, if correct: 4 points
                         st.session_state.list_quality.append(st.session_state.quality)
                         with st.chat_message("assistant"):
-                            st.write("\U0001F389 Correct! You've guessed it!") #mp unicode for emoji party popper
+                            st.write("\U0001F389 Correct! You've guessed it!")  # mp unicode for emoji party popper
                         st.balloons()
                         st.session_state.over = True
                         collect_stats()
-                    # mp: user did not guess correct, attempts 4 
+                    # mp: user did not guess correct, attempts 4
                     else:
 
-                        #jv: check quality of guesses
-                        #jv: save current themelist in categorie
-                        if st.session_state.option== "Gods":
+                        # jv: check quality of guesses
+                        # jv: save current themelist in categorie
+                        if st.session_state.option == "Gods":
                             categorie = Gods
-                        elif st.session_state.option== "Titans":
+                        elif st.session_state.option == "Titans":
                             categorie = Titans
-                        elif st.session_state.option== "Creatures":
+                        elif st.session_state.option == "Creatures":
                             categorie = Creatures
                         else:
-                          categorie = Heroes
-                        #jv: compare theme list to users input if user input for example: the goal is hera, theme is therefore gods, if the user guesses Zeus which is in Gods it is a good guess
+                            categorie = Heroes
+                        # jv: compare theme list to users input if user input for example: the goal is hera, theme is therefore gods, if the user guesses Zeus which is in Gods it is a good guess
                         if user_input.capitalize() in categorie:
                             st.session_state.quality = 3
                         #jv: if the users input is in any theme just not the right one the guess is ok: the goal is hera, theme is god but the user guesses medusa 
@@ -332,25 +339,24 @@ def main():
                         else:
                             st.session_state.quality = 1
                         st.session_state.list_quality.append(st.session_state.quality)
-                       
 
                         st.session_state.attempt += 1
-                        #mp limit st.session_state.attempt to st.session_state.maxattempts 
+                        # mp limit st.session_state.attempt to st.session_state.maxattempts
                         if st.session_state.attempt > st.session_state.maxattempts:
                             st.session_state.attempt = st.session_state.maxattempts
 
                         if st.session_state.attempt < st.session_state.maxattempts:
                             with st.chat_message("assistant"):
                                 st.write(" :blue[Nope, try again!]")
-                        else: #mp user did not win
+                        else:  # mp user did not win
                             with st.chat_message("assistant"):
                                 st.write(f" :blue[Sorry, you lost! The correct answer was:] {st.session_state.goal}")
-                            st.session_state.over = True  
-                            collect_stats() 
-                             
-      # Display attempts left
+                            st.session_state.over = True
+                            collect_stats()
+
+                            # Display attempts left
     # #if 'attempt' in st.session_state:
-    #mp if game is not over
+    # mp if game is not over
     if not st.session_state.over:
         max_attempts = st.session_state.maxattempts
         attempts_left = max_attempts - st.session_state.attempt
@@ -360,35 +366,39 @@ def main():
         with col1:
             st.write(f":blue[Attempts left: {attempts_left} of {max_attempts}]")
         with col2:
-            #mp slider: counts down hints and attempts, visualisation of it
-            st.slider("Attempts left", 0, max_attempts, (0, attempts_left), disabled=True, label_visibility="collapsed", key="attempts_slider")
+            # mp slider: counts down hints and attempts, visualisation of it
+            st.slider("Attempts left", 0, max_attempts, (0, attempts_left), disabled=True, label_visibility="collapsed",
+                      key="attempts_slider")
         with col3:
-            st.write(f":blue[Hints left: {hints_left} of {max_hints}]")   
+            st.write(f":blue[Hints left: {hints_left} of {max_hints}]")
         with col4:
-            st.slider("Hints left", 0, max_hints, (0, hints_left), disabled=True, label_visibility="collapsed", key="hints_slider")  
-    #mp if game is over 
-    else:                    
+            st.slider("Hints left", 0, max_hints, (0, hints_left), disabled=True, label_visibility="collapsed",
+                      key="hints_slider")
+            # mp if game is over
+    else:
         col1, _, col2 = st.columns(3)
         with col1:
-            st.button('Start a New Game', on_click=restart_game) 
-            #if 'attempt' in st.session_state:
-             #   st.write(f" :blue[Attempts Left: {st.session_state.maxattempts - st.session_state.attempt}]")
+            st.button('Start a New Game', on_click=restart_game)
+            # if 'attempt' in st.session_state:
+            #   st.write(f" :blue[Attempts Left: {st.session_state.maxattempts - st.session_state.attempt}]")
 
-        with col2: #button to stats page
-            if st.button("Check your game statistics") :
+        with col2:  # button to stats page
+            if st.button("Check your game statistics"):
                 st.switch_page("pages/2_📊_Game_Statistics.py")
-
 
     # Display the bottom info message
     info_area_bottom = st.empty()
-    if info_bottom: 
+    if info_bottom:
         info_area_bottom.info(info_bottom)
-    
- #set background image
+
+
+# set background image
 def get_img_as_base64(file):
     with open(file, "rb") as f:
         data = f.read()
     return base64.b64encode(data).decode()
+
+
 img = get_img_as_base64("./Background_play.png")
 page_bg_img = f"""
 <style>
@@ -408,4 +418,3 @@ if __name__ == '__main__':
 
 
 
-    
