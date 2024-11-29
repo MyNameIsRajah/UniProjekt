@@ -36,7 +36,7 @@ def get_img_as_base64(file):
     return base64.b64encode(data).decode()
 
 
-img = get_img_as_base64("./hintergrund.png")
+img = get_img_as_base64("./Background_play.png")
 page_bg_img = f"""
 <style>
 [data-testid="stAppViewContainer"]{{
@@ -145,8 +145,10 @@ if st.session_state.input > 0:
 
     # Reorder columns to match the desired format
     df = df[['Game', 'Excellent', 'Good', 'Ok', 'Bad']]
-    df =st.dataframe(df, hide_index=True)
-    st.write(df)
+    st.write("The table shows how many 'excellent', 'good', 'ok, 'bad'guesses you had per game.")
+    dfs =st.dataframe(df, hide_index=True)
+
+
 
 #jv: graph of guess quality
     df = pd.DataFrame(
@@ -157,6 +159,8 @@ if st.session_state.input > 0:
     st.caption("3 points: Your guess was a mythological figure from the right category, just not the right one.")
     st.caption("2 points: Your guess was a mythological figure, just from the wrong category.")
     st.caption("1 points: Your guess was no mythological figure to our knowledge.")
+
+    
 # if no games were played yet display a button to the play page:
 else:
     st.markdown('''
@@ -170,76 +174,3 @@ else:
         if st.button("Play a game", icon="🎲"):
             st.switch_page("pages/1_🎲_Play.py")
 
-# Durchschnittliche Rateversuche pro Spiel
-# if "attempts_per_game" in st.session_state:  # Überprüfen, ob 'attempts_per_game' existiert
-#    average_attempts = np.mean(st.session_state.attempts_per_game)  # Berechnung des Durchschnitts; np -> Durchschnitt der Rateversuche pro Spiel zu berechnen.
-#    st.write(
-#        f"Average number of guesses per game: {average_attempts:.2f}")  # Anzeige mit zwei Nachkommastellen (deshalb 2f)
-# else:
-#    st.write("No games were played yet.")
-
-# Tabelle
-
-#    df_uebersicht = pd.DataFrame({
-#        'Gesamtzahl der Spiele': [number_games],
-#        'Durchschnittliche Rateversuche': [average_attempts],
-#    })
-
-#    st.dataframe(df_uebersicht)
-
-# Tabelle
-# df_table = pd.DataFrame({
-#    'Number of games played' : [number_games],
-#   'Average number of guesses per game': [average_attempts],
-#  })
-
-# Grafische Darstellung (Balkendiagramm)
-# if "attempts_per_game" in st.session_state:
-#        attempts_data = st.session_state.attempts_per_game  # Daten aus dem Session State
-#        df_barchart = pd.DataFrame(attempts_data, columns=["Attempts"])  # Erstellt Dataframe)
-#
-#        fig, ax = plt.subplots()
-#        #  Erstellung von Diagrammen mit Matplotlib -  Ezeugt zwei objekte Figure (fig -> Container für gesamtes Diagramm, enthält alle Elemente)) und Axes (ax -> Koordinatensystem) Objekt
-#        ax.bar(dataframe.index + 1, df_barchart["Attempts"], color='purple')  # Balkendiagramm gezeichnet
-#        ax.set_title("Attempts per Game")  # Titel Diagramm
-#        ax.set_xlabel("Game Number")  # Beschriftung x-Achse
-#        ax.set_ylabel("Attempts")  # Beschriftung y-Achse
-#
-#        st.pyplot(fig)  # => Diagramm in Streamlit anzeigen
-
-# - The "Stats" page displays some stats about playing like the number of games played, the average number of guesses per game.
-# - The "Stats" page displays a bar chart showing he number of guesses for each game
-# st.write("# Your Statistics \U0001F4CA")  #unicode for bar chart
-
-
-# games per session
-
-# if "input" not in st.session_state:
-#   st.session_state.input = 0
-# games = st.session_state.input
-# if "attempt" not in st.session_state:
-#   st.session_state.attempt = 0
-# attempts per game
-# attempts = st.session_state.attempt
-
-# data = {
-#   "games": games,
-#  "attempts": attempts
-# }
-
-# if "attempts_per_game" not in st.session_state:
-#   st.write("You haven't played any game yet)")
-# else:
-#   attempts_data = st.session_state.attempts_per_game
-#  st.write(attempts_data)
-# dfs = pd.DataFrame(attempts_data, columns=["Attempts"])
-# st.write(dfs)
-
-# Plotting the attempts per game
-# fig, ax = plt.subplots()
-# ax.bar(dfs.index + 1, dfs["Attempts"], color='purple')
-# ax.set_title("Attempts per Game")
-# ax.set_xlabel("Game Number")
-# ax.set_ylabel("Attempts")
-
-# st.pyplot(fig)
