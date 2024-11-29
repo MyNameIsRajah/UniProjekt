@@ -4,9 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import base64
 
-##STATISTIK ERST AKTUALISIERT WENN AUF "NEW GAME" GEKLICKT WIRD
-
-# mp: tab name and icon
+# tab name and icon
 st.set_page_config(page_title="Game Statistics", page_icon="📊")
 # cutsom css for the title font, colours etc.
 custom_css = """
@@ -25,7 +23,7 @@ h1 {font-family: "Caesar Dressing", system-ui;}
 </style>
 </head>
 """
-# Apply the custom CSS
+# custom CSS
 st.markdown(custom_css, unsafe_allow_html=True)
 
 
@@ -53,22 +51,15 @@ st.markdown('''
 </div>
 ''', unsafe_allow_html=True)
 
-# Farbpalette für die Kategorien
-# color_palette = {
-#   "Gods": "blue",
-#  "Creatures": "orange",
-# "Titans": "green",
-# "Heroes": "purple",
-# }
 if "input" not in st.session_state:
     st.session_state.input = 0
 
-# Anzahl der Spiele
+# number of games
 if st.session_state.input > 0:
     number_games = st.session_state.input
     st.write(
-        f"Number of games played: {number_games}")  # "f" für f-string -> ermöglicht, Variablen direkt in Strings einzubetten.
-    # Durchschnittliche Rateversuche pro Spiel
+        f"Number of games played: {number_games}") 
+    # average guess attempts  per game
     if "attempts_per_game" in st.session_state:
         average_attempts = np.mean(st.session_state.attempts_per_game)
         st.write(
@@ -82,17 +73,14 @@ if st.session_state.input > 0:
         rounds.append(st.session_state.list_quality[index:index + round_size])
         index += round_size  # Move the index forward by the size of the current round
 
-    # Display the rounds
-    # st.write(rounds)
-
-    # test jule
+    
     attempts_data = st.session_state.attempts_per_game  # attempts per game
     attempts_df = pd.DataFrame(attempts_data, columns=["Attempts"])
     themes = st.session_state.theme_per_game
     data_cat = pd.DataFrame(themes, columns=["category"])
     # time tracker per game
 
-    # TODO: nochmal checken obs wirklich sekunden oder sek sind, ggbfs umrechnen?
+
     time_data = st.session_state.time_per_game
     time_df = pd.DataFrame(time_data, columns=['time(s)'])
 
@@ -119,7 +107,7 @@ if st.session_state.input > 0:
             y_label="attempts per game",
             color="category"
         )
-        # this looks shit maybe without this one??
+        
     with col2:
         st.bar_chart(
             data,
@@ -131,7 +119,7 @@ if st.session_state.input > 0:
         )
         # quality of guesses
     st.subheader("Here you can see the quality of your guesses")
-    #jv: simple table guess quality per game
+    #simple table guess quality per game
     guess_labels = {4: 'Excellent', 3: 'Good', 2: 'Ok', 1: 'Bad'}
     table_data = []
     for game_idx, guess_list in enumerate(rounds):
@@ -150,7 +138,7 @@ if st.session_state.input > 0:
 
 
 
-#jv: graph of guess quality
+#graph of guess quality
     df = pd.DataFrame(
         {"game": [i for i in range(1, len(st.session_state.list_quality) + 1)],
          "Points for quality": st.session_state.list_quality})

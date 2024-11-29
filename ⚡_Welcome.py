@@ -1,14 +1,12 @@
 import streamlit as st
 import base64
 
-# import random #SEE IF THATS GOOD
-
-# mp: tab name and icon
+# tab name and icon
 st.set_page_config(page_title="Greek Mythology", page_icon="⚡")
 
 # black rgb 0,0,0
 # white 255,255,255, orange : rgba(248, 193, 29, 0.5)
-# Define your custom CSS
+# Define custom CSS
 
 custom_css = """
 <head>
@@ -34,18 +32,11 @@ st.markdown(custom_css, unsafe_allow_html=True)
 st.markdown('''
 <div class = "my-container">
     <h1>Greek Mythology 🏛️⚡</h1>
-    <h2>Welcome to our guessing game about greek mythology. Can you guess the mythological figures I am thinking about?</h2>
+    <h2>Welcome to our guessing game about Greek Mythology. Can you guess the mythological figures I am thinking about?</h2>
     <p>You will have 4 attempts and 3 possible hints if you need them.</p>
-    <p>You can choose between guessing a greek god (for example Zeus), a hero (Herakles), a creature (Medusa) or a titan (Gaia)</p>
+    <p>Choose between guessing a greek god (for example Zeus), a hero (e.g. Herakles), a creature (e.g. Medusa) or a titan (e.g. Gaia)</p>
 </div>
 ''', unsafe_allow_html=True)
-
-# st.title("Greek Mythology \u26A1 \U0001F3DB") #unicode for bolt icon and building
-# mp: "####"" eingefügt für markdown
-# st.markdown ("#### Welcome to our guessing game about greek mythology. Can you guess the mythological figures I am thinking about?", unsafe_allow_html=True)
-# st.write("You will have 4 attempts and 3 possible hints if you need them.")
-# st.write("You can choose between guessing a greek God (for example _Zeus_), a hero (_Herakles_), a creature (_Medusa_) or a titan (_Gaia_)")
-
 
 # centered button to start guessing and go to play plage
 _, col1, _ = st.columns(3)
