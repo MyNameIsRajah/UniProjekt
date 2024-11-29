@@ -215,6 +215,7 @@ def restart_game():
 
 
 #mp function to handle category/option/theme change
+#WANN GREIFT ES DARAUF?
 def on_option_change():
     note = st.empty()
     if st.session_state.attempt == 0: ### If no attempts have been made in this game, then change the goal (hints are still countig down)
